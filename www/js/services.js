@@ -111,6 +111,8 @@ angular.module('starter.services', [])
 .factory('sharedUtils',['$ionicLoading','$ionicPopup', function($ionicLoading,$ionicPopup){
 
 
+
+
   var functionObj={};
 
   functionObj.showLoading=function(){
@@ -138,6 +140,24 @@ angular.module('starter.services', [])
 
 }])
 
+
+.factory('Products',['$http','$q', function($http,$q) {
+  // Might use a resource here that returns a JSON array
+
+  // Some fake testing data
+  var product = {};
+
+  return {
+    get: function(barcodeId) {
+      var url = 'https://type4.herokuapp.com/product/';
+      return $http.get(url + barcodeId).then(function(response){
+        if(response.status == 200){
+          return response.data;
+        }
+      });
+    }
+  };
+}])
 
   //Templates
 .factory('BlankFactory', [function(){

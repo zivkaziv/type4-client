@@ -1,0 +1,41 @@
+<ion-view view-title="Details">
+  <ion-content class="padding" id="product-details-content">
+    <div ng-show="isLoading" class="spinner-container" style="height: 100%">
+      <ion-spinner  icon="lines"></ion-spinner>
+    </div>
+    <div ng-show="!isLoading" class="product-container">
+
+      <div ng-show="noProductFound " class="no-product-found">
+        Sorry, we didn't find any product in our data base
+      </div>
+
+      <div ng-show="isNeedToConfrim && !noProductFound" class="product-confirm-container">
+        <h4>{{product.name}}</h4>
+        <img ng-src="{{product.image_url}}" style="max-height: 120px">
+        <div class="question-container">
+          <div>Is it the product?</div>
+        </div>
+        <div class="confirm-reject-button">
+           <button ion-button color="danger" ng-click="reject()">Reject</button>
+          <button ion-button color="secondary" ng-click="confirm()">Confirm</button>
+        </div>
+      </div>
+
+      <div ng-show="!isNeedToConfrim" class="product-details-container">
+        <div class="product-metadata-container">
+          <img ng-src="{{product.image_url}}" style="max-height: 150px">
+          <div class="metadata-item">
+            <div>{{product.name}}</div>
+            <div><b>Category: </b>{{product.category}}</div>
+          </div>
+        </div>
+        <div class="ingredients-container">
+            <div><b>Ingredients:</b></div>
+            <div class="ingredients">
+              <div class="ingredient-item" ng-repeat="ingredient in product.ingredients">{{ingredient}}</div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

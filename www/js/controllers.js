@@ -1,15 +1,59 @@
 angular.module('starter.controllers', [])
 
-.controller('ScanProductCtrl', function($scope,$cordovaBarcodeScanner) {
+.controller('ScanProductCtrl', function($scope,$cordovaBarcodeScanner,Products,$state) {
+  $scope.$on('$ionicView.enter', function() {
+    // Code you want executed every time view is opened
+    $scope.scanBarcode();
+  });
+
   $scope.scanBarcode = function() {
     $cordovaBarcodeScanner.scan().then(function(imageData) {
-      alert(imageData.text);
-      console.log("Barcode Format -> " + imageData.format);
-      console.log("Cancelled -> " + imageData.cancelled);
+      $state.go('tab.product-details',{productId: imageData.text});
+      // console.log("Barcode Format -> " + imageData.format);
+      // console.log("Cancelled -> " + imageData.cancelled);
     }, function(error) {
       console.log("An error happened -> " + error);
+      alert('unable to read barcode.. Try again');
     });
   };
+
+  //The controller will be loaded only when the user press the button
+  try {
+    // $scope.scanBarcode();
+  }catch (err){
+    // console.log(err);
+  }
+  // Products.get(37000274018).then(function(product){
+  //   console.log(product);
+  // });
+
+  $scope.dummyScan = function(){
+    $state.go('tab.product-details',{productId: 37000274018});
+  }
+})
+
+.controller('ProductDetailCtrl', function($scope, $stateParams, Products) {
+    $scope.product = {};
+    $scope.isLoading = true;
+    $scope.isNeedToConfrim = true;
+    $scope.noProductFound = false;
+    Products.get($stateParams.productId).then(function(product){
+      $scope.isLoading = false;
+      if(product.name) {
+        console.log(product);
+        $scope.product = product;
+      }else{
+        $scope.noProductFound = true;
+      }
+    });
+
+    $scope.confirm = function(){
+      $scope.isNeedToConfrim = false;
+    };
+
+    $scope.reject = function(){
+      $scope.isNeedToConfrim = false;
+    }
 })
 
 .controller('ChatsCtrl', function($scope, Chats) {

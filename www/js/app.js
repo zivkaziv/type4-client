@@ -58,6 +58,26 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
     }
   })
 
+  .state('tab.productscan', {
+    url: '/scan',
+    views: {
+      'tab-product-scan': {
+        templateUrl: 'templates/tab-product-scan.html',
+        controller: 'ScanProductCtrl'
+      }
+    }
+  })
+
+  .state('tab.product-details', {
+    url: '/product/:productId',
+    views: {
+      'tab-product-scan': {
+        templateUrl: 'templates/product-details.html',
+        controller: 'ProductDetailCtrl'
+      }
+    }
+  })
+
   .state('tab.chats', {
       url: '/chats',
       views: {
@@ -67,15 +87,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
         }
       }
     })
-    .state('tab.chat-detail', {
-      url: '/chats/:chatId',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
-        }
+  .state('tab.chat-detail', {
+    url: '/chats/:chatId',
+    views: {
+      'tab-chats': {
+        templateUrl: 'templates/chat-detail.html',
+        controller: 'ChatDetailCtrl'
       }
-    })
+    }
+  })
+
 
   .state('tab.account', {
     url: '/account',
@@ -88,6 +109,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+  $urlRouterProvider.otherwise('/tab/account');
 
 });

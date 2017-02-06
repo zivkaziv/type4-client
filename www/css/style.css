@@ -1,1 +1,75 @@
 /* Empty. Add your own CSS if you like */
+
+
+/*Product details design*/
+#product-details-content .spinner-container{
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#product-details-content .spinner svg {
+  width: 88px;
+  height: 88px;
+  stroke: #444;
+  fill: #444;
+}
+
+#product-details-content .product-container{
+  /*display: flex;*/
+  /*flex-direction: column;*/
+  /*align-items: center;*/
+}
+
+#product-details-content .product-container .no-product-found{
+  font-size: 20px;
+  text-align: center;
+  margin-top: 10%;
+}
+
+#product-details-content .product-container .product-confirm-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#product-details-content .product-container .product-confirm-container h4{
+  text-align: center;
+}
+
+#product-details-content .product-container .product-confirm-container .question-container{
+  margin-top: 6%;
+}
+#product-details-content .product-container .product-confirm-container .confirm-reject-button {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 4%;
+  width: 70%;
+}
+
+
+
+
+#product-details-content .product-container .product-details-container{
+  display: flex;
+  flex-direction: column;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+#product-details-content .product-container .product-details-container{
+
+}
+
+#product-details-content .product-container .product-details-container .product-metadata-container{
+  display: flex;
+  align-items: center;
+}
+
+#product-details-content .product-container .product-details-container .ingredients-container {
+  margin-top:2% ;
+}
+
+#product-details-content .product-container .product-details-container .ingredients {
+  display: flex;
+  flex-direction: column;
+}
