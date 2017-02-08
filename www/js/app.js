@@ -7,7 +7,12 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','ngCordova'])
 
-.run(function($ionicPlatform) {
+  .constant('ApiEndpoint', {
+    url: 'https://type4.herokuapp.com/'
+  })
+
+
+  .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -23,7 +28,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+  .config(function($stateProvider, $urlRouterProvider) {
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
@@ -32,19 +37,23 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   $stateProvider
 
   // setup an abstract state for the tabs directive
-    .state('tab', {
+  .state('tab', {
     url: '/tab',
     abstract: true,
     templateUrl: 'templates/tabs.html'
   })
 
   .state('login', {
-    url: '/login',
-    views: {
-      templateUrl: 'templates/tab-login.html',
-      controller: 'LoginCtrl'
-    }
-  })
+      url: '/login',
+      templateUrl: 'templates/login.html',
+      controller: 'loginCtrl'
+    })
+
+  .state('register', {
+      url: '/register',
+      templateUrl: 'templates/register.html',
+      controller: 'registerCtrl'
+    })
 
   // Each tab has its own nav history stack:
 
@@ -109,6 +118,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/account');
+  $urlRouterProvider.otherwise('/login');
 
 });

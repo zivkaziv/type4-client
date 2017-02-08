@@ -73,7 +73,6 @@ angular.module('starter.services', [])
   }
 })
 
-
 .factory('fireBaseData', function($firebase) {
   var ref = new Firebase("https://projectId.firebaseio.com/"),
     refCart = new Firebase("https://projectId.firebaseio.com/cart"),
@@ -107,7 +106,6 @@ angular.module('starter.services', [])
   }
 })
 
-
 .factory('sharedUtils',['$ionicLoading','$ionicPopup', function($ionicLoading,$ionicPopup){
 
 
@@ -140,7 +138,6 @@ angular.module('starter.services', [])
 
 }])
 
-
 .factory('Products',['$http','$q', function($http,$q) {
   // Might use a resource here that returns a JSON array
 
@@ -159,7 +156,48 @@ angular.module('starter.services', [])
   };
 }])
 
-  //Templates
+.service('AuthService', function($q, $http, $rootScope, $ionicLoading, ApiEndpoint){
+  return {
+    login : function($email, $password) {
+      var data = {
+        email: $email,
+        password: $password
+      };
+
+      var deferred = $q.defer();
+      $http.post(ApiEndpoint.url+'login', data)
+        .then(function(response){
+          if(response.data.token) {
+            $rootScope.token = response.data.token;
+            $rootScope.user = response.data.user;
+          }
+          deferred.resolve(response.data);
+        },function(err){
+          deferred.reject(err);
+        });
+
+      return deferred.promise;
+    },
+
+    signup:function(user){
+      var deferred = $q.defer();
+      $http.post(ApiEndpoint.url+'signup', user)
+        .then(function(response){
+          if(response.data.token) {
+            $rootScope.token = response.data.token;
+            $rootScope.user = response.data.user;
+          }
+          deferred.resolve(response.data);
+        },function(err){
+          deferred.reject(err);
+        });
+      return deferred.promise;
+    }
+  }
+})
+
+
+//Templates
 .factory('BlankFactory', [function(){
 
 }])
