@@ -81,7 +81,7 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('loginCtrl', function($scope, $rootScope, $state, AuthService,$ionicLoading) {
+.controller('loginCtrl', function($scope, $rootScope, $state, AuthService,$ionicLoading,$localStorage) {
 
   ionic.Platform.ready(function(){
 
@@ -89,6 +89,13 @@ angular.module('starter.controllers', [])
   $scope.user = {};
   $scope.isError = false;
   $scope.errorMessage = '';
+
+  $scope.autoLogin = function(){
+    if($localStorage.token && $localStorage.email){
+      $state.go('tab.account');
+    }
+  };
+  $scope.autoLogin();
   $scope.login = function() {
     $scope.isError = false;
     console.info('Authentication...');
@@ -109,7 +116,7 @@ angular.module('starter.controllers', [])
         }
         $scope.isError = true;
       });
-  }
+  };
 })
 
 .controller('registerCtrl', function($scope,AuthService,$state,$ionicLoading) {

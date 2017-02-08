@@ -156,7 +156,7 @@ angular.module('starter.services', [])
   };
 }])
 
-.service('AuthService', function($q, $http, $rootScope, $ionicLoading, ApiEndpoint){
+.service('AuthService', function($q, $http, $rootScope, $ionicLoading, ApiEndpoint,$localStorage){
   return {
     login : function($email, $password) {
       var data = {
@@ -170,6 +170,8 @@ angular.module('starter.services', [])
           if(response.data.token) {
             $rootScope.token = response.data.token;
             $rootScope.user = response.data.user;
+            $localStorage.token = $rootScope.token;
+            $localStorage.email = $rootScope.user.email;
           }
           deferred.resolve(response.data);
         },function(err){
