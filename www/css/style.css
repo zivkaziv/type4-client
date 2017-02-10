@@ -100,3 +100,17 @@
   margin-right: 10px;
   border: 1px solid;
 }
+
+
+/*Allergies*/
+#allergies-view .search-field{
+  width: 100%;
+}
+
+#allergies-view .angucomplete-dropdown{
+  width: 100%;
+}
+
+#allergies-view .highlight {
+  color: #ff0000;
+}

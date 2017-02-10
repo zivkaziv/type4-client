@@ -10,7 +10,9 @@ angular.module('starter',
     'starter.controllers',
     'starter.services',
     'ngCordova',
-    'ngStorage'
+    'ngStorage',
+    'ionic-zoom-view',
+    'angucomplete-alt'
   ])
 
   .constant('ApiEndpoint', {
@@ -62,7 +64,6 @@ angular.module('starter',
     })
 
   // Each tab has its own nav history stack:
-
   .state('tab.dash', {
     url: '/dash',
     views: {
@@ -82,7 +83,6 @@ angular.module('starter',
       }
     }
   })
-
   .state('tab.product-details', {
     url: '/product/:productId',
     views: {
@@ -112,6 +112,15 @@ angular.module('starter',
     }
   })
 
+  .state('tab.allergies', {
+    url: '/allergies',
+    views: {
+      'tab-account': {
+        templateUrl: 'templates/allergies.html',
+        controller: 'AllergiesCtrl'
+      }
+    }
+  })
 
   .state('tab.account', {
     url: '/account',
@@ -123,7 +132,7 @@ angular.module('starter',
     }
   });
 
+
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/login');
-
 });

@@ -11,13 +11,13 @@
 
       <div ng-show="isNeedToConfrim && !noProductFound" class="product-confirm-container">
         <h4>{{product.name}}</h4>
-        <img ng-src="{{product.image_url}}" style="max-height: 120px">
+        <img ng-src="{{product.image_url}}" zoom-src="{{product.image_url}}" zoom-view style="max-height: 120px">
         <div class="question-container">
           <div>Is it the product?</div>
         </div>
         <div class="confirm-reject-button">
-           <button ion-button color="danger" ng-click="reject()">Reject</button>
-          <button ion-button color="secondary" ng-click="confirm()">Confirm</button>
+           <button class="button button-assertive" ng-click="reject()" style="min-width: 110px;">Reject</button>
+          <button class="button button-positive" ng-click="confirm()" style="min-width: 110px;">Confirm</button>
         </div>
       </div>
 
