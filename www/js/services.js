@@ -181,6 +181,28 @@ angular.module('starter.services', [])
       return deferred.promise;
     },
 
+    loginByToken: function(token){
+      var deferred = $q.defer();
+      var config = {
+        headers: {
+        "Authorization": 'Bearer ' + token
+      }};
+      $http.post(ApiEndpoint.url+'tokenlogin', {},config)
+        .then(function(response){
+          if(response.data.token) {
+            $rootScope.token = response.data.token;
+            $rootScope.user = response.data.user;
+            $localStorage.token = $rootScope.token;
+            $localStorage.email = $rootScope.user.email;
+          }
+          deferred.resolve(response.data);
+        },function(err){
+          deferred.reject(err);
+        });
+
+      return deferred.promise;
+    },
+
     signup:function(user){
       var deferred = $q.defer();
       $http.post(ApiEndpoint.url+'signup', user)
@@ -194,8 +216,24 @@ angular.module('starter.services', [])
           deferred.reject(err);
         });
       return deferred.promise;
+    },
+
+    updateUser:function(user){
+      var deferred = $q.defer();
+      var config = {
+        headers: {
+          "Authorization": 'Bearer ' + $rootScope.token
+        }};
+      $http.put(ApiEndpoint.url+'account', user,config)
+        .then(function(response){
+          deferred.resolve(response.data);
+        },function(err){
+          deferred.reject(err);
+        });
+      return deferred.promise;
     }
   }
+
 })
 
 

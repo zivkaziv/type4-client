@@ -81,17 +81,25 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('AllergiesCtrl', function($scope,$rootScope) {
-    $scope.selectedAllergies=[];
+.controller('AllergiesCtrl', function($scope,$rootScope,AuthService) {
+    var needToSave = false;
+
     $scope.addSelectedItemFromRemoteAutocomplete = function(item) {
       if (item && item.originalObject) {
-        $scope.selectedAllergies.push(item);
+        $rootScope.user.allergies.push(item);
+        needToSave = true;
       }
     };
 
     $scope.removeItem = function(allergy,index){
-      $scope.selectedAllergies.splice(index,1);
+      $rootScope.user.allergies.splice(index,1);
+      needToSave = true;
     };
+
+    $scope.$on('$ionicView.leave',function(){
+      console.log('leaving');
+      AuthService.updateUser($rootScope.user);
+    });
 
     $scope.countries = [
       {name: 'Afghanistan', code: 'AF'},
@@ -350,8 +358,17 @@ angular.module('starter.controllers', [])
   $scope.errorMessage = '';
 
   $scope.autoLogin = function(){
+    $ionicLoading.show();
     if($localStorage.token && $localStorage.email){
-      $state.go('tab.account');
+      AuthService.loginByToken($localStorage.token)
+        .then(function(response){
+          console.log(response);
+          $state.go('tab.account');
+          $ionicLoading.hide();
+        },function(err){
+          $ionicLoading.hide();
+        });
+
     }
   };
   $scope.autoLogin();

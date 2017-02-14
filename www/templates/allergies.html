@@ -19,7 +19,7 @@
         <div class="item item-divider">
           Your Allergies:
         </div>
-        <div class="item item-button-right" ng-repeat="allergy in selectedAllergies">
+        <div class="item item-button-right" ng-repeat="allergy in user.allergies">
           {{allergy.title}}
           <button class="button button-clear button-assertive" ng-click="removeItem(allergy,$index)">
             <i class="icon ion-minus-circled"></i>
