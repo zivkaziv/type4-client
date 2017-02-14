@@ -358,8 +358,8 @@ angular.module('starter.controllers', [])
   $scope.errorMessage = '';
 
   $scope.autoLogin = function(){
-    $ionicLoading.show();
     if($localStorage.token && $localStorage.email){
+      $ionicLoading.show();
       AuthService.loginByToken($localStorage.token)
         .then(function(response){
           console.log(response);
