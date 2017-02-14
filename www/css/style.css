@@ -107,6 +107,10 @@
   width: 100%;
 }
 
+#allergies-view input{
+  width: 100%;
+}
+
 #allergies-view .angucomplete-dropdown{
   width: 100%;
 }

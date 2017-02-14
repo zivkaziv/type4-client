@@ -81,12 +81,16 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('AllergiesCtrl', function($scope) {
+.controller('AllergiesCtrl', function($scope,$rootScope) {
     $scope.selectedAllergies=[];
     $scope.addSelectedItemFromRemoteAutocomplete = function(item) {
       if (item && item.originalObject) {
         $scope.selectedAllergies.push(item);
       }
+    };
+
+    $scope.removeItem = function(allergy,index){
+      $scope.selectedAllergies.splice(index,1);
     };
 
     $scope.countries = [
