@@ -112,22 +112,22 @@ angular.module('starter',
     }
   })
 
-  .state('tab.allergies', {
-    url: '/allergies',
-    views: {
-      'tab-account': {
-        templateUrl: 'templates/allergies.html',
-        controller: 'AllergiesCtrl'
-      }
-    }
-  })
-
   .state('tab.account', {
     url: '/account',
     views: {
       'tab-account': {
         templateUrl: 'templates/tab-account.html',
         controller: 'AccountCtrl'
+      }
+    }
+  })
+
+  .state('tab.allergies', {
+    url: '/account/allergies',
+    views: {
+      'tab-account': {
+        templateUrl: 'templates/allergies.html',
+        controller: 'AllergiesCtrl'
       }
     }
   });

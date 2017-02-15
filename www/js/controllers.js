@@ -75,9 +75,13 @@ angular.module('starter.controllers', [])
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('AccountCtrl', function($scope) {
+.controller('AccountCtrl', function($scope,$state) {
   $scope.settings = {
     enableFriends: true
+  };
+
+  $scope.goToAllergies = function(){
+    $state.go('tab.allergies');
   };
 })
 
@@ -98,7 +102,9 @@ angular.module('starter.controllers', [])
 
     $scope.$on('$ionicView.leave',function(){
       console.log('leaving');
-      AuthService.updateUser($rootScope.user);
+      if(needToSave) {
+        AuthService.updateUser($rootScope.user);
+      }
     });
 
     $scope.countries = [
