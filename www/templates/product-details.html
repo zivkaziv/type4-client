@@ -6,7 +6,7 @@
     <div ng-show="!isLoading" class="product-container">
 
       <div ng-show="noProductFound " class="no-product-found">
-        Sorry, we didn't find any product in our data base
+        Sorry, we didn't find any product in our data base <br/><br/><b>{{product.barcode_id}}</b>
       </div>
 
       <div ng-show="isNeedToConfrim && !noProductFound" class="product-confirm-container">

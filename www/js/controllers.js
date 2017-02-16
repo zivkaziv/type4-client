@@ -39,10 +39,11 @@ angular.module('starter.controllers', [])
     $scope.noProductFound = false;
     Products.get($stateParams.productId).then(function(product){
       $scope.isLoading = false;
+      $scope.product = product;
       if(product.name) {
-        console.log(product);
-        $scope.product = product;
+        // console.log(product);
       }else{
+        // console.log(product);
         $scope.noProductFound = true;
       }
     });
