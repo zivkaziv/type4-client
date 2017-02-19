@@ -32,7 +32,7 @@
         <div class="ingredients-container">
             <div><b>Ingredients:</b></div>
             <div class="ingredients">
-              <div class="ingredient-item" ng-repeat="ingredient in product.ingredients">{{ingredient}}</div>
+              <div class="ingredient-item" ng-repeat="ingredient in product.ingredient_analysis">{{ingredient.name}} - {{ingredient.analysis}}</div>
             </div>
         </div>
       </div>

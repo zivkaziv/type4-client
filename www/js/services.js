@@ -49,7 +49,7 @@ angular.module('starter.services', [])
   };
 })
 
-.factory('Products',['$http','$q', function($http,$q,$rootScope) {
+.factory('Products', function($http,$q,$rootScope,ApiEndpoint) {
   // Some fake testing data
   var product = {};
 
@@ -60,15 +60,14 @@ angular.module('starter.services', [])
 
   return {
     get: function(barcodeId) {
-      var url = 'https://type4.herokuapp.com/product/';
-      return $http.get(url + barcodeId,config).then(function(response){
+      return $http.get(ApiEndpoint.url + 'product/' + barcodeId,config).then(function(response){
         if(response.status == 200){
           return response.data;
         }
       });
     }
   };
-}])
+})
 
 .service('AuthService', function($q, $http, $rootScope, $ionicLoading, ApiEndpoint,$localStorage,Allergies){
   return {
