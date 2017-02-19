@@ -49,105 +49,19 @@ angular.module('starter.services', [])
   };
 })
 
-.service('LoginService', function($q) {
-  return {
-    loginUser: function(name, pw) {
-      var deferred = $q.defer();
-      var promise = deferred.promise;
-
-      if (name == 'user' && pw == 'secret') {
-        deferred.resolve('Welcome ' + name + '!');
-      } else {
-        deferred.reject('Wrong credentials.');
-      }
-      promise.success = function(fn) {
-        promise.then(fn);
-        return promise;
-      };
-      promise.error = function(fn) {
-        promise.then(null, fn);
-        return promise;
-      };
-      return promise;
-    }
-  }
-})
-
-.factory('fireBaseData', function($firebase) {
-  var ref = new Firebase("https://projectId.firebaseio.com/"),
-    refCart = new Firebase("https://projectId.firebaseio.com/cart"),
-    refUser = new Firebase("https://projectId.firebaseio.com/users"),
-    refCategory = new Firebase("https://projectId.firebaseio.com/category"),
-    refOrder = new Firebase("https://projectId.firebaseio.com/orders"),
-    refFeatured = new Firebase("https://projectId.firebaseio.com/featured"),
-    refMenu = new Firebase("https://projectId.firebaseio.com/menu");
-  return {
-    ref: function() {
-      return ref;
-    },
-    refCart: function() {
-      return refCart;
-    },
-    refUser: function() {
-      return refUser;
-    },
-    refCategory: function() {
-      return refCategory;
-    },
-    refOrder: function() {
-      return refOrder;
-    },
-    refFeatured: function() {
-      return refFeatured;
-    },
-    refMenu: function() {
-      return refMenu;
-    }
-  }
-})
-
-.factory('sharedUtils',['$ionicLoading','$ionicPopup', function($ionicLoading,$ionicPopup){
-
-
-
-
-  var functionObj={};
-
-  functionObj.showLoading=function(){
-    $ionicLoading.show({
-      content: '<i class=" ion-loading-c"></i> ', // The text to display in the loading indicator
-      animation: 'fade-in', // The animation to use
-      showBackdrop: true, // Will a dark overlay or backdrop cover the entire view
-      maxWidth: 200, // The maximum width of the loading indicator. Text will be wrapped if longer than maxWidth
-      showDelay: 0 // The delay in showing the indicator
-    });
-  };
-  functionObj.hideLoading=function(){
-    $ionicLoading.hide();
-  };
-
-
-  functionObj.showAlert = function(title,message) {
-    var alertPopup = $ionicPopup.alert({
-      title: title,
-      template: message
-    });
-  };
-
-  return functionObj;
-
-}])
-
-.factory('Products',['$http','$q', function($http,$q) {
-  // Might use a resource here that returns a JSON array
-
+.factory('Products',['$http','$q', function($http,$q,$rootScope) {
   // Some fake testing data
   var product = {};
+
+  var config = {
+    headers: {
+      "Authorization": 'Bearer ' + $rootScope.token
+    }};
 
   return {
     get: function(barcodeId) {
       var url = 'https://type4.herokuapp.com/product/';
-      return $http.get(url + barcodeId).then(function(response){
+      return $http.get(url + barcodeId,config).then(function(response){
         if(response.status == 200){
           return response.data;
         }
@@ -156,7 +70,7 @@ angular.module('starter.services', [])
   };
 }])
 
-.service('AuthService', function($q, $http, $rootScope, $ionicLoading, ApiEndpoint,$localStorage){
+.service('AuthService', function($q, $http, $rootScope, $ionicLoading, ApiEndpoint,$localStorage,Allergies){
   return {
     login : function($email, $password) {
       var data = {
@@ -236,12 +150,41 @@ angular.module('starter.services', [])
 
 })
 
+.service('Allergies', function($http,$q){
+  var allergies = [];
+  function loadAllergies() {
+    var deferred = $q.defer();
+    if(allergies.length == 0) {
+      var url = 'https://type4.herokuapp.com/allergies';
+      $http.get(url).then(function (response) {
+        if (response.status == 200) {
+          deferred.resolve(response.data);
+        }
+      });
+    }else{
+      deferred.resolve();
+      console.log('already loaded');
+    }
+    return deferred.promise;
+  }
+
+  loadAllergies().then(function(data){
+    if(data) {
+      allergies = data;
+    }
+  });
+  return {
+    get: function(){
+      return allergies;
+    }
+  }
+})
 
 //Templates
-.factory('BlankFactory', [function(){
+.factory('BlankFactory', function(){
 
-}])
+})
 
-.service('BlankService', [function(){
+.service('BlankService', function(){
 
-}]);
+});
