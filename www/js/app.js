@@ -72,6 +72,15 @@ angular.module('starter',
       }
     }
   })
+    .state('tab.product-details-home', {
+      url: '/home/product/:productId',
+      views: {
+        'tab-home': {
+          templateUrl: 'templates/product-details.html',
+          controller: 'ProductDetailCtrl'
+        }
+      }
+    })
 
   .state('tab.productscan', {
     url: '/scan',
@@ -101,6 +110,7 @@ angular.module('starter',
         }
       }
     })
+
   .state('tab.chat-detail', {
     url: '/chats/:chatId',
     views: {

@@ -1,0 +1,33 @@
+<ion-view view-title="Home" id="home-view">
+  <div
+      style="
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20%;
+      margin-bottom: 3%">
+    <img ng-click="scanBarcode()" ng-src="img/scan_img.png" height="170" width="170"/>
+    <div style="margin-top:10px">Press the barcode to start scanning </div>
+  </div>
+  <div class="item item-divider">
+    Last products
+  </div>
+  <ion-content class="padding" style="margin-top: 71%">
+    <!--<button class="button" ng-click="scanBarcode()">Scan</button>-->
+    <div style="
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;">
+
+      <div class="list last-products-container">
+        <a class="item item-thumbnail-left" ng-repeat="search in user.searches"
+           href="#/tab/home/product/{{search.barcode_id}}?from_history=true">
+          <img ng-src="{{search.image_url}}">
+          <h2>{{search.name}}</h2>
+          <p>{{search.scraped_time | date}}</p>
+        </a>
+        <div></div>
+      </div>
+    </div>
+</ion-view>

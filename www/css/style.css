@@ -118,3 +118,10 @@
 #allergies-view .highlight {
   color: #ff0000;
 }
+
+
+
+/*Home*/
+#home-view .last-products-container{
+  width: 100%;
+}

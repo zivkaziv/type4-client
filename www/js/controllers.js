@@ -1,9 +1,17 @@
 angular.module('starter.controllers', [])
 
-.controller('HomeCtrl', function($scope,$state) {
-  console.log('in home');
-  $scope.settings = {
-    enableFriends: true
+.controller('HomeCtrl', function($scope,$state,$cordovaBarcodeScanner,$rootScope) {
+  $scope.scanBarcode = function() {
+    $cordovaBarcodeScanner.scan().then(function(imageData) {
+      if(imageData.cancelled){
+        $state.go('tab.home');
+      }else {
+        $state.go('tab.product-details', {productId: imageData.text});
+      }
+    }, function(error) {
+      console.log("An error happened -> " + error);
+      alert('unable to read barcode.. Try again');
+    });
   };
 })
 
@@ -15,7 +23,11 @@ angular.module('starter.controllers', [])
 
   $scope.scanBarcode = function() {
     $cordovaBarcodeScanner.scan().then(function(imageData) {
-      $state.go('tab.product-details',{productId: imageData.text});
+      if(imageData.cancelled){
+        $state.go('tab.home');
+      }else {
+        $state.go('tab.product-details', {productId: imageData.text});
+      }
       // console.log("Barcode Format -> " + imageData.format);
       // console.log("Cancelled -> " + imageData.cancelled);
     }, function(error) {
@@ -24,43 +36,47 @@ angular.module('starter.controllers', [])
     });
   };
 
-  //The controller will be loaded only when the user press the button
-  try {
-    // $scope.scanBarcode();
-  }catch (err){
-    // console.log(err);
-  }
-  // Products.get(37000274018).then(function(product){
-  //   console.log(product);
-  // });
-
   $scope.dummyScan = function(){
     $state.go('tab.product-details',{productId: 37000274018});
   }
 })
 
-.controller('ProductDetailCtrl', function($scope, $stateParams, Products) {
+.controller('ProductDetailCtrl', function($scope, $stateParams, Products,$rootScope,$location,$state) {
     $scope.product = {};
-    $scope.isLoading = true;
     $scope.isNeedToConfrim = true;
     $scope.noProductFound = false;
-    Products.get($stateParams.productId).then(function(product){
-      $scope.isLoading = false;
-      $scope.product = product;
-      if(product.name) {
-        // console.log(product);
-      }else{
-        // console.log(product);
-        $scope.noProductFound = true;
+    if(!$location.search().from_history) {
+      $scope.isLoading = true;
+      Products.get($stateParams.productId).then(function (product) {
+        $scope.isLoading = false;
+        $scope.product = product;
+        if (product.name) {
+          // console.log(product);
+          if (!$rootScope.user || !$rootScope.user.searches) {
+            $rootScope.user.searches = [];
+          }
+          $rootScope.user.searches.push(product);
+        } else {
+          // console.log(product);
+          $scope.noProductFound = true;
+        }
+      });
+    }else{
+      for(var searchIndex = 0; searchIndex < $rootScope.user.searches.length; searchIndex++){
+        if($rootScope.user.searches[searchIndex].barcode_id === $stateParams.productId) {
+          $scope.product = $rootScope.user.searches[searchIndex];
+          $scope.isNeedToConfrim = false;
+          break;
+        }
       }
-    });
+    }
 
     $scope.confirm = function(){
       $scope.isNeedToConfrim = false;
     };
 
     $scope.reject = function(){
-      $scope.isNeedToConfrim = false;
+      $state.go('tab.productscan');
     }
 })
 
