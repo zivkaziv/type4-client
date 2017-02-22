@@ -1,5 +1,12 @@
 angular.module('starter.controllers', [])
 
+.controller('HomeCtrl', function($scope,$state) {
+  console.log('in home');
+  $scope.settings = {
+    enableFriends: true
+  };
+})
+
 .controller('ScanProductCtrl', function($scope,$cordovaBarcodeScanner,Products,$state) {
   $scope.$on('$ionicView.enter', function() {
     // Code you want executed every time view is opened
@@ -371,7 +378,8 @@ angular.module('starter.controllers', [])
       AuthService.loginByToken($localStorage.token)
         .then(function(response){
           console.log(response);
-          $state.go('tab.account');
+          // $state.go('tab.account');
+          $state.go('tab.home');
           $ionicLoading.hide();
         },function(err){
           $ionicLoading.hide();
@@ -389,7 +397,8 @@ angular.module('starter.controllers', [])
       .then(function(response){
       console.log(response);
       $ionicLoading.hide();
-      $state.go('tab.account');
+      // $state.go('tab.account');
+      $state.go('tab.home');
       },function(err){
         console.log(err);
         $ionicLoading.hide();

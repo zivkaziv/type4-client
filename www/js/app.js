@@ -63,12 +63,12 @@ angular.module('starter',
     })
 
   // Each tab has its own nav history stack:
-  .state('tab.dash', {
-    url: '/dash',
+  .state('tab.home', {
+    url: '/home',
     views: {
-      'tab-dash': {
-        templateUrl: 'templates/tab-dash.html',
-        controller: 'ScanProductCtrl'
+      'tab-home': {
+        templateUrl: 'templates/tab-home.html',
+        controller: 'HomeCtrl'
       }
     }
   })
@@ -117,6 +117,16 @@ angular.module('starter',
       'tab-account': {
         templateUrl: 'templates/tab-account.html',
         controller: 'AccountCtrl'
+      }
+    }
+  })
+
+  .state('tab.allergies-menu', {
+    url: '/allergies',
+    views: {
+      'tab-allergies': {
+        templateUrl: 'templates/allergies.html',
+        controller: 'AllergiesCtrl'
       }
     }
   })
