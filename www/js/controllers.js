@@ -111,6 +111,7 @@ angular.module('starter.controllers', [])
 
 .controller('AllergiesCtrl', function($scope,$rootScope,AuthService,Allergies,$rootScope) {
     var needToSave = false;
+    $scope.showDelete = false;
     $scope.allergies = Allergies.get();
 
     $scope.addSelectedItemFromRemoteAutocomplete = function(item) {

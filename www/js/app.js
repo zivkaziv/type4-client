@@ -135,7 +135,7 @@ angular.module('starter',
     url: '/allergies',
     views: {
       'tab-allergies': {
-        templateUrl: 'templates/allergies.html',
+        templateUrl: 'templates/tab-allergies.html',
         controller: 'AllergiesCtrl'
       }
     }

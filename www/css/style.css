@@ -109,6 +109,9 @@
 
 #allergies-view input{
   width: 100%;
+  border: 1px solid lightgray;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 #allergies-view .angucomplete-dropdown{

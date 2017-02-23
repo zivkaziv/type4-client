@@ -1,0 +1,62 @@
+<ion-view view-title="Allergies" id="allergies-view" id="allergies-view">
+  <div class="bar bar-subheader" >
+    <div style="width: 100%"
+         angucomplete-alt id="ex1"
+         placeholder="Search allergies"
+         maxlength="50"
+         pause="100"
+         local-data="allergies"
+         search-fields="compound"
+         title-field="compound"
+         minlength="1"
+         multi-select="true"
+         clear-selected="true"
+         selected-object="addSelectedItemFromRemoteAutocomplete"
+         input-class="form-control form-control-small"
+         match-class="highlight">
+    </div>
+  </div>
+
+  <ion-content class="padding has-header has-subheader">
+
+    <div class="item item-divider" style="
+          display: flex;
+          align-items: center;
+          padding-left: 10px;">
+      <button class="button button-icon icon ion-ios-minus-outline"
+              ng-click="showDelete = !showDelete;"
+      style="margin-right: 10px">
+        </button>
+      My Allergies:
+    </div>
+    <ion-list show-delete="showDelete"
+              show-reorder="false"
+              can-swipe="true">
+      <ion-item ng-repeat="allergy in user.allergies"
+                class="item">
+
+        <h3>{{allergy.title}}</h3>
+        <!--<ion-option-button class="button-positive"-->
+                           <!--ng-click="share(item)">-->
+          <!--Share-->
+        <!--</ion-option-button>-->
+        <!--<ion-option-button class="button-info"-->
+                           <!--ng-click="edit(allergy)">-->
+          <!--Edit-->
+        <!--</ion-option-button>-->
+        <ion-option-button class="ion-minus-circled button-assertive"
+                           ng-click="removeItem(allergy,$index)">
+        </ion-option-button>
+
+        <ion-delete-button class="ion-minus-circled"
+                           ng-click="removeItem(allergy,$index)">
+        </ion-delete-button>
+
+        <ion-reorder-button class="ion-navicon"
+                            on-reorder="reorderItem(allergy, $fromIndex, $toIndex)">
+        </ion-reorder-button>
+
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
