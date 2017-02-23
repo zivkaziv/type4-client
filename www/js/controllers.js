@@ -452,4 +452,33 @@ angular.module('starter.controllers', [])
         $scope.isError = true;
       });
   }
+  $scope.isDisabled = true;
+  // style strength
+  $scope.passwordStrength = {
+    "float": "left",
+    "width": "100%",
+    "height": "25px",
+    "margin-left": "5px"
+  };
+
+  var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+  var mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
+  $scope.passwordQuality = '';
+  $scope.analyze = function(value){
+    if(value==''){
+      $scope.passwordStrength["background-color"] = "white";
+      $scope.passwordQuality = '';
+    }else if(strongRegex.test(value)){
+      $scope.passwordStrength["background-color"] = "green";
+      $scope.passwordQuality = 'ion-thumbsup balanced';
+      $scope.isDisabled = false;
+    }else if(mediumRegex.test(value)) {
+      $scope.passwordStrength["background-color"] = "orange";
+      $scope.passwordQuality = 'ion-thumbsup balanced';
+      $scope.isDisabled = false;
+    }else{
+      $scope.passwordStrength["background-color"] = "red";
+      $scope.passwordQuality = 'ion-thumbsdown assertive';
+    }
+  };
 });

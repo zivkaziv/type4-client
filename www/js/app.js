@@ -145,7 +145,7 @@ angular.module('starter',
     url: '/account/allergies',
     views: {
       'tab-account': {
-        templateUrl: 'templates/allergies.html',
+        templateUrl: 'templates/tab-allergies.html',
         controller: 'AllergiesCtrl'
       }
     }

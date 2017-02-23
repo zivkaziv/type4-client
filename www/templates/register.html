@@ -12,10 +12,17 @@
         </label>
         <label class="item item-input">
           <span class="input-label">Password</span>
-          <input type="password" placeholder="" name="password" ng-model="user.password">
+          <input ng-change="analyze(user.password)" type="password" placeholder="" name="password" ng-model="user.password">
+          <div style="
+                position: relative;
+                right: 15px;
+                font-size: x-large;
+                "
+               class="{{passwordQuality}}">
+          </div>
         </label>
       </ion-list>
-      <a ng-click="signup()" id="register-button3" class="button button-stable  button-block">Sign up</a>
+      <a ng-disabled="isDisabled" ng-click="signup()" id="register-button3" class="button button-stable  button-block">Sign up</a>
       <div ng-show="isError" class="login-problem-message">{{errorMessage}}</div>
     </form>
   </ion-content>
