@@ -179,6 +179,38 @@ angular.module('starter.services', [])
   }
 })
 
+.service('GoogleAnalyticsService', function($rootScope){
+  return {
+    init : function(){
+      if (typeof analytics !== 'undefined'){
+        analytics.startTrackerWithId('UA-92906138-1');
+      }
+      else
+      {
+        console.log("Google Analytics plugin could not be loaded.")
+      }
+    },
+    registerUser:function(){
+      if (typeof analytics !== 'undefined'){
+        analytics.setUserId($rootScope.user.email);
+      }
+      else
+      {
+        console.log("Google Analytics plugin could not be loaded.")
+      }
+    },
+    sendEvent:function(category, action, label, value){
+      if (typeof analytics !== 'undefined'){
+        analytics.trackEvent(category, action, label, value);
+      }
+    },
+    trackView:function(viewName){
+      if (typeof analytics !== 'undefined'){
+        analytics.trackView(viewName);
+      }
+    }
+  }
+})
 //Templates
 .factory('BlankFactory', function(){
 

@@ -127,4 +127,17 @@
 /*Home*/
 #home-view .last-products-container{
   width: 100%;
+  height: 59%;
+}
+
+.platform-android #home-view .last-products-container{
+  height: 55% !important;
+}
+
+.platform-android .bar-subheader.has-tabs-top{
+  top:93px !important;
+}
+
+.platform-android .has-subheader.has-tabs-top{
+  top:137px;
 }

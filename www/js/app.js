@@ -19,7 +19,7 @@ angular.module('starter',
     url: 'https://type4.herokuapp.com/'
   })
 
-  .run(function($ionicPlatform) {
+  .run(function($ionicPlatform,GoogleAnalyticsService,$rootScope,$state) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -32,6 +32,10 @@ angular.module('starter',
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+    $rootScope.$on('$stateChangeSuccess', function () {
+        GoogleAnalyticsService.init();
+        GoogleAnalyticsService.trackView($state.current.name);
+    });
   });
 })
 

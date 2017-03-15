@@ -1,7 +1,11 @@
 angular.module('starter.controllers', [])
 
-.controller('HomeCtrl', function($scope,$state,$cordovaBarcodeScanner,$rootScope) {
+.controller('HomeCtrl', function($scope,$state,$cordovaBarcodeScanner,GoogleAnalyticsService) {
+  $scope.$on('$ionicView.enter', function() {
+    GoogleAnalyticsService.sendEvent('menu-buttons', 'home', 'home', 'click');
+  });
   $scope.scanBarcode = function() {
+    GoogleAnalyticsService.sendEvent('home-buttons','scan','scan','click');
     $cordovaBarcodeScanner.scan().then(function(imageData) {
       if(imageData.cancelled){
         $state.go('tab.home');
@@ -15,10 +19,11 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('ScanProductCtrl', function($scope,$cordovaBarcodeScanner,Products,$state) {
+.controller('ScanProductCtrl', function($scope,$cordovaBarcodeScanner,Products,$state,GoogleAnalyticsService) {
   $scope.$on('$ionicView.enter', function() {
     // Code you want executed every time view is opened
     $scope.scanBarcode();
+    GoogleAnalyticsService.sendEvent('menu-buttons','scan','scan','click');
   });
 
   $scope.scanBarcode = function() {
@@ -38,26 +43,28 @@ angular.module('starter.controllers', [])
 
   $scope.dummyScan = function(){
     $state.go('tab.product-details',{productId: 37000274018});
-  }
+  };
 })
 
-.controller('ProductDetailCtrl', function($scope, $stateParams, Products,$rootScope,$location,$state) {
+.controller('ProductDetailCtrl', function($scope, $stateParams, Products,$rootScope,$location,$state,GoogleAnalyticsService) {
     $scope.product = {};
     $scope.isNeedToConfrim = true;
     $scope.noProductFound = false;
     if(!$location.search().from_history) {
+      GoogleAnalyticsService.sendEvent('product-details','scan','barcode', '$stateParams.productId');
       $scope.isLoading = true;
       Products.get($stateParams.productId).then(function (product) {
         $scope.isLoading = false;
         $scope.product = product;
         if (product.name) {
+          GoogleAnalyticsService.sendEvent('search-results', 'found', 'barcode', '$stateParams.productId');
           // console.log(product);
           if (!$rootScope.user || !$rootScope.user.searches) {
             $rootScope.user.searches = [];
           }
           $rootScope.user.searches.push(product);
         } else {
-          // console.log(product);
+          GoogleAnalyticsService.sendEvent('search-results', 'not-found', 'barcode', '$stateParams.productId');
           $scope.noProductFound = true;
         }
       });
@@ -66,18 +73,20 @@ angular.module('starter.controllers', [])
         if($rootScope.user.searches[searchIndex].barcode_id === $stateParams.productId) {
           $scope.product = $rootScope.user.searches[searchIndex];
           $scope.isNeedToConfrim = false;
+          GoogleAnalyticsService.sendEvent('product-details','history','barcode', '$stateParams.productId');
           break;
         }
       }
     }
-
-    $scope.confirm = function(){
-      $scope.isNeedToConfrim = false;
+  $scope.confirm = function(){
+    GoogleAnalyticsService.sendEvent('search-results','confirm','barcode', '$stateParams.productId');
+    $scope.isNeedToConfrim = false;
     };
 
-    $scope.reject = function(){
-      $state.go('tab.productscan');
-    }
+  $scope.reject = function(){
+    GoogleAnalyticsService.sendEvent('search-results','reject','barcode', '$stateParams.productId');
+    $state.go('tab.productscan');
+  };
 })
 
 .controller('ChatsCtrl', function($scope, Chats) {
@@ -380,7 +389,7 @@ angular.module('starter.controllers', [])
     ];
 })
 
-.controller('loginCtrl', function($scope, $rootScope, $state, AuthService,$ionicLoading,$localStorage) {
+.controller('loginCtrl', function($scope, $rootScope, $state, AuthService,$ionicLoading,$localStorage,GoogleAnalyticsService) {
 
   ionic.Platform.ready(function(){
 
@@ -391,11 +400,15 @@ angular.module('starter.controllers', [])
 
   $scope.autoLogin = function(){
     if($localStorage.token && $localStorage.email){
+      $scope.user.email = $localStorage.email;
+      $scope.user.password = 'myPassword123!';
       $ionicLoading.show();
       AuthService.loginByToken($localStorage.token)
         .then(function(response){
           console.log(response);
           // $state.go('tab.account');
+          GoogleAnalyticsService.registerUser();
+
           $state.go('tab.home');
           $ionicLoading.hide();
         },function(err){
@@ -414,7 +427,8 @@ angular.module('starter.controllers', [])
       .then(function(response){
       console.log(response);
       $ionicLoading.hide();
-      // $state.go('tab.account');
+      GoogleAnalyticsService.registerUser();
+        // $state.go('tab.account');
       $state.go('tab.home');
       },function(err){
         console.log(err);
@@ -422,7 +436,11 @@ angular.module('starter.controllers', [])
         if(Array.isArray(err.data)){
             $scope.errorMessage = err.data[0].msg;
         }else{
-            $scope.errorMessage = err.data.msg;
+            if(err.data != null) {
+              $scope.errorMessage = err.data.msg;
+            }else{
+              $scope.errorMessage = 'Unable to login';
+            }
         }
         $scope.isError = true;
       });
