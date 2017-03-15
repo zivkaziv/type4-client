@@ -125,11 +125,21 @@ angular.module('starter.controllers', [])
 
     $scope.addSelectedItemFromRemoteAutocomplete = function(item) {
       if (item && item.originalObject) {
-        $rootScope.user.allergies.push(item);
-        needToSave = true;
+        if(notExist(item)){
+          $rootScope.user.allergies.push(item);
+          needToSave = true;
+        }
       }
     };
 
+    notExist = function(allergy){
+      for(var allergyIndex = 0; allergyIndex < $rootScope.user.allergies.length; allergyIndex++){
+        if(allergy.title === $rootScope.user.allergies[allergyIndex].title){
+          return false;
+        }
+      }
+      return true;
+    };
     $scope.removeItem = function(allergy,index){
       $rootScope.user.allergies.splice(index,1);
       needToSave = true;
