@@ -52,12 +52,12 @@ angular.module('starter.controllers', [])
     $scope.noProductFound = false;
 
     $scope.handleIsSafe = function(){
-      if($scope.product && !$scope.product.hasOwnProperty('is_safe') &&  $scope.product.ingredient_analysis.length > 0){
-        $scope.product.is_safe =true;
+      if($scope.product && !$scope.product.hasOwnProperty('analysis_result') &&  $scope.product.ingredient_analysis.length > 0){
+        $scope.product.analysis_result ='SAFE';
         for(var ingredientIndex = 0 ; $scope.product.ingredient_analysis.length; ingredientIndex++){
           if($scope.product.ingredient_analysis[ingredientIndex].analysis === 'SENSITIVE' ||
             $scope.product.ingredient_analysis[ingredientIndex].analysis === 'UNKNOWN'){
-            $scope.product.is_safe =false;
+            $scope.product.analysis_result = 'NOT_SAFE';
             break;
           }
         }

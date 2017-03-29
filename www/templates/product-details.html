@@ -27,9 +27,9 @@
       <div ng-show="!isNeedToConfrim" class="product-details-container">
         <div class="product-metadata-container">
           <img ng-src="{{product.image_url}}" zoom-src="{{product.image_url}}" zoom-view style="max-height: 150px">
-          <ANY ng-switch="product.is_safe">
-            <ANY ng-switch-when="true"><img ng-src="img/safe_mark.png" style="max-height: 120px;position: absolute;left: 7%;top:3%"/></ANY>
-            <ANY ng-switch-when="false"><img ng-src="img/not_safe_mark.png" style="max-height: 120px;position: absolute;left: 7%;top:3%"/></ANY>
+          <ANY ng-switch="product.analysis_result">
+            <ANY ng-switch-when="SAFE"><img ng-src="img/safe_mark.png" style="max-height: 120px;position: absolute;left: 7%;top:3%"/></ANY>
+            <ANY ng-switch-when="NOT_SAFE"><img ng-src="img/not_safe_mark.png" style="max-height: 120px;position: absolute;left: 7%;top:3%"/></ANY>
             <ANY ng-switch-default></ANY>
           </ANY>
 
