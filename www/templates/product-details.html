@@ -27,15 +27,25 @@
       <div ng-show="!isNeedToConfrim" class="product-details-container">
         <div class="product-metadata-container">
           <img ng-src="{{product.image_url}}" zoom-src="{{product.image_url}}" zoom-view style="max-height: 150px">
+          <ANY ng-switch="product.is_safe">
+            <ANY ng-switch-when="true"><img ng-src="img/safe_mark.png" style="max-height: 120px;position: absolute;left: 7%;top:3%"/></ANY>
+            <ANY ng-switch-when="false"><img ng-src="img/not_safe_mark.png" style="max-height: 120px;position: absolute;left: 7%;top:3%"/></ANY>
+            <ANY ng-switch-default></ANY>
+          </ANY>
+
           <div class="metadata-item">
             <div>{{product.name}}</div>
-            <div><b>Category: </b>{{product.category}}</div>
+            <div ng-i="product.category"><b>Category: </b>{{product.category}}</div>
           </div>
         </div>
         <div class="ingredients-container">
             <div><b>Ingredients:</b></div>
             <div class="ingredients">
-              <div class="ingredient-item" ng-repeat="ingredient in product.ingredient_analysis">{{ingredient.name}} - {{ingredient.analysis}}</div>
+              <div class="ingredient-item"
+                   ng-class="ingredient.analysis == 'NOT_SENSITIVE' ? 'safe-ingredient' : (ingredient.analysis == 'SENSITIVE' ? 'not-safe-ingredient' : 'unknown-ingredient')"
+                   ng-repeat="ingredient in product.ingredient_analysis | orderBy : '-analysis'">
+                {{ingredient.name}}
+              </div>
             </div>
         </div>
       </div>

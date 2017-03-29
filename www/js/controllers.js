@@ -50,12 +50,27 @@ angular.module('starter.controllers', [])
     $scope.product = {};
     $scope.isNeedToConfrim = true;
     $scope.noProductFound = false;
+
+    $scope.handleIsSafe = function(){
+      if($scope.product && !$scope.product.hasOwnProperty('is_safe') &&  $scope.product.ingredient_analysis.length > 0){
+        $scope.product.is_safe =true;
+        for(var ingredientIndex = 0 ; $scope.product.ingredient_analysis.length; ingredientIndex++){
+          if($scope.product.ingredient_analysis[ingredientIndex].analysis === 'SENSITIVE' ||
+            $scope.product.ingredient_analysis[ingredientIndex].analysis === 'UNKNOWN'){
+            $scope.product.is_safe =false;
+            break;
+          }
+        }
+      }
+    };
+
     if(!$location.search().from_history) {
       GoogleAnalyticsService.sendEvent('product-details','scan','barcode', '$stateParams.productId');
       $scope.isLoading = true;
       Products.get($stateParams.productId).then(function (product) {
         $scope.isLoading = false;
         $scope.product = product;
+        $scope.handleIsSafe();
         if (product.name) {
           GoogleAnalyticsService.sendEvent('search-results', 'found', 'barcode', '$stateParams.productId');
           // console.log(product);
@@ -72,6 +87,7 @@ angular.module('starter.controllers', [])
       for(var searchIndex = 0; searchIndex < $rootScope.user.searches.length; searchIndex++){
         if($rootScope.user.searches[searchIndex].barcode_id === $stateParams.productId) {
           $scope.product = $rootScope.user.searches[searchIndex];
+          $scope.handleIsSafe();
           $scope.isNeedToConfrim = false;
           GoogleAnalyticsService.sendEvent('product-details','history','barcode', '$stateParams.productId');
           break;
@@ -87,6 +103,8 @@ angular.module('starter.controllers', [])
     GoogleAnalyticsService.sendEvent('search-results','reject','barcode', '$stateParams.productId');
     $state.go('tab.productscan');
   };
+
+
 })
 
 .controller('ChatsCtrl', function($scope, Chats) {

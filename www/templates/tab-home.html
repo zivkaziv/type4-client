@@ -21,7 +21,7 @@
 
       <div class="list last-products-container">
         <ion-content>
-          <a class="item item-thumbnail-left" ng-repeat="search in user.searches | orderBy:'-'"
+          <a ng-if="search.name" class="item item-thumbnail-left" ng-repeat="search in user.searches | orderBy:'-'"
              href="#/tab/home/product/{{search.barcode_id}}?from_history=true">
             <img ng-src="{{search.image_url}}">
             <h2>{{search.name}}</h2>

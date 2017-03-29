@@ -74,6 +74,19 @@
   flex-direction: column;
 }
 
+#product-details-content .product-container .product-details-container .ingredients .not-safe-ingredient{
+  color:red;
+  font-weight: bold;
+}
+
+#product-details-content .product-container .product-details-container .ingredients .safe-ingredient{
+  color:green;
+}
+
+#product-details-content .product-container .product-details-container .ingredients .unknown-ingredient{
+  color:orange;
+}
+
 
 
 
@@ -130,6 +143,12 @@
   height: 59%;
 }
 
+/*Fix image proportion*/
+#home-view .last-products-container img{
+  width: auto !important;
+  height: auto !important;
+}
+
 .platform-android #home-view .last-products-container{
   height: 55% !important;
 }
@@ -141,3 +160,5 @@
 .platform-android .has-subheader.has-tabs-top{
   top:137px;
 }
+
+
