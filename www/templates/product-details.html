@@ -5,8 +5,8 @@
     </div>
     <div ng-show="!isLoading" class="product-container">
 
-      <div ng-show="noProductFound " class="no-product-found">
-        Sorry, we didn't find any product in our data base <br/><br/><b>{{product.barcode_id}}</b>
+      <div ng-show="noProductFound" class="no-product-found">
+        Product not found yet<br/>Work in progress<br/><br/><br/><b>{{product.barcode_id}}</b>
       </div>
 
       <div ng-show="isNeedToConfrim && !noProductFound" class="product-confirm-container">
@@ -24,21 +24,22 @@
         </div>
       </div>
 
-      <div ng-show="!isNeedToConfrim" class="product-details-container">
+      <div ng-show="!isNeedToConfrim && !noProductFound" class="product-details-container">
         <div class="product-metadata-container">
+          <div class="product-image-container" style="min-width: 40%; text-align: center">
           <img ng-src="{{product.image_url}}" zoom-src="{{product.image_url}}" zoom-view style="max-height: 150px">
           <ANY ng-switch="product.analysis_result">
             <ANY ng-switch-when="SAFE"><img ng-src="img/safe_mark.png" style="max-height: 120px;position: absolute;left: 7%;top:3%"/></ANY>
-            <ANY ng-switch-when="NOT_SAFE"><img ng-src="img/not_safe_mark.png" style="max-height: 120px;position: absolute;left: 7%;top:3%"/></ANY>
+            <ANY ng-switch-when="NOT_SAFE"><img ng-src="img/not_safe_mark.png" style="max-height: 120px;position: absolute;left: 10%;top:3%"/></ANY>
             <ANY ng-switch-default></ANY>
           </ANY>
-
+          </div>
           <div class="metadata-item">
             <div>{{product.name}}</div>
-            <div ng-i="product.category"><b>Category: </b>{{product.category}}</div>
+            <div ng-if="product.category"><b>Category: </b>{{product.category}}</div>
           </div>
         </div>
-        <div class="ingredients-container">
+        <div ng-if="product.ingredient_analysis.length > 0" class="ingredients-container">
             <div><b>Ingredients:</b></div>
             <div class="ingredients">
               <div class="ingredient-item"
@@ -48,6 +49,15 @@
               </div>
             </div>
         </div>
+
+        <div ng-if="product.ingredient_analysis.length === 0" class="ingredients-container"
+             style="text-align: center;
+              font-size: 22px;
+              margin-top: 10%;
+              line-height: 40px;">
+          <div><b>Nothing here yet<br/>We're working on it!</b></div>
+        </div>
+
       </div>
     </div>
   </ion-content>

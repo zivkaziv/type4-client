@@ -42,13 +42,20 @@ angular.module('starter.controllers', [])
   };
 
   $scope.dummyScan = function(){
-    $state.go('tab.product-details',{productId: 37000274018});
+    //Working product
+    // $state.go('tab.product-details',{productId: 37000274018});
+
+    //Not found product
+    // $state.go('tab.product-details',{productId: 1234});
+
+    //No ingredients
+    $state.go('tab.product-details',{productId: 7290002331018});
   };
 })
 
 .controller('ProductDetailCtrl', function($scope, $stateParams, Products,$rootScope,$location,$state,GoogleAnalyticsService) {
     $scope.product = {};
-    $scope.isNeedToConfrim = true;
+    $scope.isNeedToConfrim = false;
     $scope.noProductFound = false;
 
     $scope.handleIsSafe = function(){
@@ -62,6 +69,9 @@ angular.module('starter.controllers', [])
           }
         }
       }
+      if($scope.product.ingredient_analysis.length === 0){
+        $scope.product.analysis_result ='UNKNOWN';
+      }
     };
 
     if(!$location.search().from_history) {
@@ -70,8 +80,9 @@ angular.module('starter.controllers', [])
       Products.get($stateParams.productId).then(function (product) {
         $scope.isLoading = false;
         $scope.product = product;
-        $scope.handleIsSafe();
         if (product.name) {
+          $scope.handleIsSafe();
+          $scope.isNeedToConfrim = $scope.product.ingredient_analysis.length === 0 ? false: true;
           GoogleAnalyticsService.sendEvent('search-results', 'found', 'barcode', '$stateParams.productId');
           // console.log(product);
           if (!$rootScope.user || !$rootScope.user.searches) {
@@ -81,6 +92,7 @@ angular.module('starter.controllers', [])
         } else {
           GoogleAnalyticsService.sendEvent('search-results', 'not-found', 'barcode', '$stateParams.productId');
           $scope.noProductFound = true;
+
         }
       });
     }else{
@@ -424,7 +436,7 @@ angular.module('starter.controllers', [])
   });
   $scope.user = {};
   $scope.isError = false;
-  $scope.errorMessage = '';
+  $scope.errorMessage = 'We have a bug:( please contact info@typ4app.com';
 
   $scope.autoLogin = function(){
     if($localStorage.token && $localStorage.email){
@@ -465,7 +477,9 @@ angular.module('starter.controllers', [])
             $scope.errorMessage = err.data[0].msg;
         }else{
             if(err.data != null) {
-              $scope.errorMessage = err.data.msg;
+              if(err.data.msg) {
+                $scope.errorMessage = err.data.msg;
+              }
             }else{
               $scope.errorMessage = 'Unable to login';
             }
