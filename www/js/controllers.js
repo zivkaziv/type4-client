@@ -13,8 +13,8 @@ angular.module('starter.controllers', [])
         $state.go('tab.product-details', {productId: imageData.text});
       }
     }, function(error) {
-      console.log("An error happened -> " + error);
-      alert('unable to read barcode.. Try again');
+      // console.log("An error happened -> " + error);
+      // alert('unable to read barcode.. Try again');
     });
   };
 })
@@ -36,8 +36,8 @@ angular.module('starter.controllers', [])
       // console.log("Barcode Format -> " + imageData.format);
       // console.log("Cancelled -> " + imageData.cancelled);
     }, function(error) {
-      console.log("An error happened -> " + error);
-      alert('unable to read barcode.. Try again');
+      // console.log("An error happened -> " + error);
+      // alert('unable to read barcode.. Try again');
     });
   };
 
