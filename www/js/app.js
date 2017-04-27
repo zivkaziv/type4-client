@@ -184,7 +184,12 @@ angular.module('starter',
 // });
 
   //run with deploy
-  .run(function($ionicDeploy,$ionicPlatform,GoogleAnalyticsService,$rootScope,$state) {
+  .run(function($ionicDeploy,
+                $ionicPlatform,
+                GoogleAnalyticsService,
+                $rootScope,
+                $state,
+                $ionicPopup) {
     $ionicPlatform.ready(function() {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
       // for form inputs)
@@ -210,8 +215,22 @@ angular.module('starter',
               console.log('Extracting..');
               return $ionicDeploy.extract();
             }).then(function() {
-              console.log('loading the new app..');
-              return $ionicDeploy.load();
+              $ionicPopup.show({
+                title: 'Update available',
+                subTitle: 'An update was just downloaded. Would you like to restart your app to use the latest features?',
+                buttons: [
+                  { text: 'Not now' },
+                  {
+                    text: 'Restart',
+                    onTap: function(e) {
+                      console.log('loading the new app..');
+                      $ionicDeploy.load();
+                      e.stopPropagation();
+                    }
+                  }
+                ]
+              });
+              // return $ionicDeploy.load();
             });
           }else{
             console.log('No need to download ' + response);
