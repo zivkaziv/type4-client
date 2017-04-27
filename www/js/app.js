@@ -200,49 +200,21 @@ angular.module('starter',
 
       // Check for updates
       $ionicDeploy.channel = 'dev';
-      $ionicDeploy.getMetadata().then(function(versions){
-        console.log('VERSIONS: ' + versions);
-      });
+      console.log('Checking if we need to download new version');
       $ionicDeploy.check().then(function(response) {
-          console.log('CHECK: ' + response);
           // response will be true/false
           if (response) {
             console.log('Downloading update...');
             // Download the updates
             $ionicDeploy.download().then(function() {
-              console.log('Extracting update...');
-              // Extract the updates
-              $ionicDeploy.extract().then(function() {
-                // Load the updated version
-                $ionicDeploy.load();
-              }, function(error) {
-                console.log('Error extracting new update...');
-                setTimeout(function(){
-                }, 1500);
-                // Error extracting
-              }, function(progress) {
-                console.log('Extract progress...' + progress);
-                // setTimeout(function(){
-                //   hide();
-                // }, 5000);
-                // Do something with the zip extraction progress
-                // $scope.extraction_progress = progress;
-              });
-            }, function(error) {
-              show('Error downloading...');
-              setTimeout(function(){
-              }, 1500);
-              // Error downloading the updates
-            }, function(progress) {
-              console.log('Download progress...' + progress);
-              // setTimeout(function(){
-              //   hide();
-              // }, 5000);
-              // Do something with the download progress
-              // $scope.download_progress = progress;
+              console.log('Extracting..');
+              return $ionicDeploy.extract();
+            }).then(function() {
+              console.log('loading the new app..');
+              return $ionicDeploy.load();
             });
           }else{
-            console.log('NO RESPONSE: ' + response);
+            console.log('No need to download ' + response);
           }
         },
         function(error) {
@@ -256,5 +228,3 @@ angular.module('starter',
       });
     });
   });
-
-

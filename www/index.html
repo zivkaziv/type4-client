@@ -20,7 +20,17 @@
     <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="lib/angucomplete/angucomplete-alt.css">
     <!--<meta http-equiv="Content-Security-Policy" content="default-src * data: cdvfile: gap:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">-->
-    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 192.168.30.209:35729">
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 192.168.30.209:35729">-->
+    <access origin="*">
+    <allow-intent href="http://*/*">
+    <allow-intent href="https://*/*">
+    <allow-intent href="tel:*">
+    <allow-intent href="sms:*">
+    <allow-intent href="mailto:*">
+    <allow-intent href="geo:*">
+    <allow-navigation href="http://*/*">
+    <allow-navigation href="https://*/*">
+    <allow-navigation href="data:*">
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
     <link href="css/ionic.app.css" rel="stylesheet">
     -->
@@ -47,7 +57,7 @@
     <script src="js/controllers.js"></script>
     <script src="js/services.js"></script>
     <link rel="stylesheet" href="lib/ionic/css/ionic.min.css">
-  </head>
+  </allow-navigation></allow-navigation></allow-navigation></allow-intent></allow-intent></allow-intent></allow-intent></allow-intent></allow-intent></access></head>
   <body ng-app="starter">
     <!--
       The nav bar that will be updated as we navigate between views.
