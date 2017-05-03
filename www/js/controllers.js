@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('HomeCtrl', function($scope,$state,$cordovaBarcodeScanner,GoogleAnalyticsService) {
+.controller('HomeCtrl', function($scope,$state,$cordovaBarcodeScanner,GoogleAnalyticsService,$ionicPush) {
   $scope.$on('$ionicView.enter', function() {
     GoogleAnalyticsService.sendEvent('menu-buttons', 'home', 'home', 'click');
   });
@@ -17,6 +17,11 @@ angular.module('starter.controllers', [])
       // alert('unable to read barcode.. Try again');
     });
   };
+
+  $scope.$on('cloud:push:notification', function(event, data) {
+    var msg = data.message;
+    alert(msg.title + ': ' + msg.text);
+  });
 })
 
 .controller('ScanProductCtrl', function($scope,$cordovaBarcodeScanner,Products,$state,GoogleAnalyticsService) {

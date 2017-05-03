@@ -69,84 +69,135 @@ angular.module('starter.services', [])
   };
 })
 
-.service('AuthService', function($q, $http, $rootScope, $ionicLoading, ApiEndpoint,$localStorage,Allergies){
-  return {
-    login : function($email, $password) {
+
+.service('AuthService', function($q,
+                                 $http,
+                                 $rootScope,
+                                 $ionicLoading,
+                                 ApiEndpoint,
+                                 $localStorage,
+                                 PushNotificationService,
+                                 $ionicUser,$ionicAuth){
+  var service = this;
+  service.login = function ($email, $password) {
       var data = {
         email: $email,
         password: $password
       };
 
       var deferred = $q.defer();
-      $http.post(ApiEndpoint.url+'login', data)
-        .then(function(response){
-          if(response.data.token) {
+      $http.post(ApiEndpoint.url + 'login', data)
+        .then(function (response) {
+          if (response.data.token) {
             $rootScope.token = response.data.token;
             $rootScope.user = response.data.user;
             $localStorage.token = $rootScope.token;
             $localStorage.email = $rootScope.user.email;
+            $ionicUser.email = $rootScope.user.email
           }
+          handleIonicUser($rootScope.user);
+
           deferred.resolve(response.data);
-        },function(err){
+        }, function (err) {
           deferred.reject(err);
         });
 
       return deferred.promise;
-    },
+    };
 
-    loginByToken: function(token){
+  service.loginByToken = function (token) {
       var deferred = $q.defer();
       var config = {
         headers: {
-        "Authorization": 'Bearer ' + token
-      }};
-      $http.post(ApiEndpoint.url+'tokenlogin', {},config)
-        .then(function(response){
-          if(response.data.token) {
+          "Authorization": 'Bearer ' + token
+        }
+      };
+      $http.post(ApiEndpoint.url + 'tokenlogin', {}, config)
+        .then(function (response) {
+          if (response.data.token) {
             $rootScope.token = response.data.token;
             $rootScope.user = response.data.user;
             $localStorage.token = $rootScope.token;
             $localStorage.email = $rootScope.user.email;
           }
+          handleIonicUser($rootScope.user);
           deferred.resolve(response.data);
-        },function(err){
+        }, function (err) {
           deferred.reject(err);
         });
 
       return deferred.promise;
-    },
+    };
 
-    signup:function(user){
+  service.signup =function (user) {
       var deferred = $q.defer();
-      $http.post(ApiEndpoint.url+'signup', user)
-        .then(function(response){
-          if(response.data.token) {
+      $http.post(ApiEndpoint.url + 'signup', user)
+        .then(function (response) {
+          if (response.data.token) {
             $rootScope.token = response.data.token;
             $rootScope.user = response.data.user;
           }
+          handleIonicUser($rootScope.user);
           deferred.resolve(response.data);
-        },function(err){
+        }, function (err) {
           deferred.reject(err);
         });
       return deferred.promise;
-    },
+    };
 
-    updateUser:function(user){
+  service.updateUser = function (user) {
       var deferred = $q.defer();
       var config = {
         headers: {
           "Authorization": 'Bearer ' + $rootScope.token
-        }};
-      $http.put(ApiEndpoint.url+'account', user,config)
-        .then(function(response){
+        }
+      };
+      $http.put(ApiEndpoint.url + 'account', user, config)
+        .then(function (response) {
           deferred.resolve(response.data);
-        },function(err){
+        }, function (err) {
           deferred.reject(err);
         });
       return deferred.promise;
+    };
+
+  function handleIonicUser(user){
+    var details = {'email':user.email,'password': user.email};
+    if(!user.ionic_id){
+      $ionicAuth.signup(details).then(function(){
+        $ionicAuth.login('basic', details).then(function() {
+          handlePushToken();
+        });
+      },function(err){
+        //this in case the user already logged in, but we didn't save the ionic id in our DB
+        $ionicAuth.login('basic', details).then(function(){
+          handlePushToken();
+        });
+      });
+    }else {
+      $ionicAuth.login('basic', details).then(function(){
+        handlePushToken();
+      });
     }
   }
 
+  function handlePushToken() {
+    PushNotificationService.register().then(function (token) {
+      console.log("return value is " + token);
+      $rootScope.user.push_token = token.token;
+      if(!$rootScope.user.ionic_id) {
+        $rootScope.user.ionic_id = $ionicUser.id;
+      }
+      service.updateUser($rootScope.user);
+    },function(err){
+      if(!$rootScope.user.ionic_id) {
+        $rootScope.user.ionic_id = $ionicUser.id;
+      }
+      service.updateUser($rootScope.user);
+    });
+  }
+
+  return service;
 })
 
 .service('Allergies', function($http,$q){
@@ -211,6 +262,25 @@ angular.module('starter.services', [])
     }
   }
 })
+
+.service('PushNotificationService',function($ionicPush,$q){
+  return {
+    register: function () {
+      var deferred = $q.defer();
+      $ionicPush.register().then(function (t) {
+        return $ionicPush.saveToken(t);
+      }).then(function (t) {
+        console.log('Token saved: ' + t.token);
+        deferred.resolve(t);
+      },function(err){
+        console.log('Token saved err: ', err);
+        deferred.reject(err);
+      });
+      return deferred.promise;
+    }
+  }
+})
+
 //Templates
 .factory('BlankFactory', function(){
 

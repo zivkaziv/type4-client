@@ -142,46 +142,23 @@ angular.module('starter',
 
   .config(function($ionicCloudProvider) {
     $ionicCloudProvider.init({
-      "core": {
+      "core": {//App ID in https://apps.ionic.io
         "app_id": "435a0266"
+      },
+      "push": {//Notification service in ionic https://apps.ionic.io
+        "sender_id": "637673090836",
+        "pluginConfig": {
+          "ios": {
+            "badge": true,
+            "sound": true
+          },
+          "android": {
+            "iconColor": "#343434"
+          }
+        }
       }
     });
   })
-
-  // .run(function($ionicPopup,$ionicDeploy) {
-  //   $ionicDeploy.channel = 'dev';
-  //   $ionicDeploy.check().then(function(updateAvailable) {
-  //     if (updateAvailable) {
-  //       $ionicDeploy.download().then(function() {
-  //         $ionicDeploy.extract().then(function() {
-  //           $ionicDeploy.load();
-  //         });
-  //       });
-  //     }else{
-  //       console.log('no updates');
-  //     }
-  //   });
-  // })
-
-//   .run(function($ionicPlatform,GoogleAnalyticsService,$rootScope,$state) {
-//   $ionicPlatform.ready(function() {
-//     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-//     // for form inputs)
-//     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
-//       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-//       cordova.plugins.Keyboard.disableScroll(true);
-//
-//     }
-//     if (window.StatusBar) {
-//       // org.apache.cordova.statusbar required
-//       StatusBar.styleDefault();
-//     }
-//     $rootScope.$on('$stateChangeSuccess', function () {
-//         GoogleAnalyticsService.init();
-//         GoogleAnalyticsService.trackView($state.current.name);
-//     });
-//   });
-// });
 
   //run with deploy
   .run(function($ionicDeploy,
@@ -204,7 +181,7 @@ angular.module('starter',
       }
 
       // Check for updates
-      $ionicDeploy.channel = 'dev';
+      // $ionicDeploy.channel = 'dev';
       console.log('Checking if we need to download new version');
       $ionicDeploy.check().then(function(response) {
           // response will be true/false
