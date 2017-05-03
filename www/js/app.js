@@ -167,6 +167,49 @@ angular.module('starter',
                 $rootScope,
                 $state,
                 $ionicPopup) {
+    var initApp = function () {
+      console.log('Checking if we need to download new version');
+      $ionicDeploy.check().then(function (response) {
+          // response will be true/false
+          if (response) {
+            console.log('Downloading update...');
+            // Download the updates
+            $ionicDeploy.download().then(function () {
+              console.log('Extracting..');
+              return $ionicDeploy.extract();
+            }).then(function () {
+              $ionicPopup.show({
+                title: 'Update available',
+                subTitle: 'An update was just downloaded. Would you like to restart your app to use the latest features?',
+                buttons: [
+                  {text: 'Not now'},
+                  {
+                    text: 'Restart',
+                    onTap: function (e) {
+                      console.log('loading the new app..');
+                      $ionicDeploy.load();
+                      e.stopPropagation();
+                    }
+                  }
+                ]
+              });
+              // return $ionicDeploy.load();
+            });
+          } else {
+            console.log('No need to download ' + response);
+          }
+        },
+        function (error) {
+          // Error checking for updates
+          console.log('Error checking for updates ' + error);
+        });
+
+      $rootScope.$on('$stateChangeSuccess', function () {
+        GoogleAnalyticsService.init();
+        GoogleAnalyticsService.trackView($state.current.name);
+      });
+    };
+
     $ionicPlatform.ready(function() {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
       // for form inputs)
@@ -180,47 +223,20 @@ angular.module('starter',
         StatusBar.styleDefault();
       }
 
-      // Check for updates
-      // $ionicDeploy.channel = 'dev';
-      console.log('Checking if we need to download new version');
-      $ionicDeploy.check().then(function(response) {
-          // response will be true/false
-          if (response) {
-            console.log('Downloading update...');
-            // Download the updates
-            $ionicDeploy.download().then(function() {
-              console.log('Extracting..');
-              return $ionicDeploy.extract();
-            }).then(function() {
-              $ionicPopup.show({
-                title: 'Update available',
-                subTitle: 'An update was just downloaded. Would you like to restart your app to use the latest features?',
-                buttons: [
-                  { text: 'Not now' },
-                  {
-                    text: 'Restart',
-                    onTap: function(e) {
-                      console.log('loading the new app..');
-                      $ionicDeploy.load();
-                      e.stopPropagation();
-                    }
-                  }
-                ]
-              });
-              // return $ionicDeploy.load();
-            });
-          }else{
-            console.log('No need to download ' + response);
-          }
-        },
-        function(error) {
-          // Error checking for updates
-          console.log('Error checking for updates ' + error);
-        });
-
-      $rootScope.$on('$stateChangeSuccess', function () {
-        GoogleAnalyticsService.init();
-        GoogleAnalyticsService.trackView($state.current.name);
-      });
+      if(navigator.connection && navigator.connection.type == Connection.NONE) {
+        $ionicPopup.confirm({
+          title: "Internet Disconnected",
+          content: "The internet is disconnected on your device."
+        })
+          .then(function(result) {
+            if(!result) {
+              ionic.Platform.exitApp();
+            }else{
+              initApp();
+            }
+          });
+      }else{
+        initApp();
+      }
     });
   });
