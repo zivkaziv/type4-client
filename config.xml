@@ -60,4 +60,7 @@
     <plugin name="phonegap-plugin-push" spec="~1.8.4">
         <variable name="SENDER_ID" value="637673090836" />
     </plugin>
+    <plugin name="cordova-plugin-geolocation" spec="~2.4.3">
+        <variable name="GEOLOCATION_USAGE_DESCRIPTION" value=" " />
+    </plugin>
 </widget>

@@ -49,7 +49,10 @@ angular.module('starter.services', [])
   };
 })
 
-.factory('Products', function($http,$q,$rootScope,ApiEndpoint) {
+.factory('Products', function($http,
+                              $q,
+                              $rootScope,
+                              ApiEndpoint,GeoService) {
   // Some fake testing data
   var product = {};
 
@@ -60,15 +63,19 @@ angular.module('starter.services', [])
 
   return {
     get: function(barcodeId) {
-      return $http.get(ApiEndpoint.url + 'product/' + barcodeId,config).then(function(response){
-        if(response.status == 200){
-          return response.data;
-        }
+      var data = {};
+      return GeoService.getCurrentLocation().then(function(position){
+        console.log(position);
+        data.position = position;
+        return $http.post(ApiEndpoint.url + 'product/' + barcodeId,data,config).then(function(response){
+          if(response.status == 200){
+            return response.data;
+          }
+        });
       });
     }
   };
 })
-
 
 .service('AuthService', function($q,
                                  $http,
@@ -77,7 +84,8 @@ angular.module('starter.services', [])
                                  ApiEndpoint,
                                  $localStorage,
                                  PushNotificationService,
-                                 $ionicUser,$ionicAuth){
+                                 $ionicUser,
+                                 $ionicAuth,GeoService){
   var service = this;
   service.login = function ($email, $password) {
       var data = {
@@ -121,6 +129,7 @@ angular.module('starter.services', [])
             $localStorage.email = $rootScope.user.email;
           }
           handleIonicUser($rootScope.user);
+          GeoService.getCurrentLocation();
           deferred.resolve(response.data);
         }, function (err) {
           deferred.reject(err);
@@ -279,6 +288,51 @@ angular.module('starter.services', [])
       return deferred.promise;
     }
   }
+})
+
+.service('GeoService', function($cordovaGeolocation,$q) {
+  var posOptions = {timeout: 10000, enableHighAccuracy: false};
+  return {
+    getCurrentLocation: function() {
+      var deferred = $q.defer();
+      $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
+          var lat = position.coords.latitude;
+          var long = position.coords.longitude;
+          console.log('ziv.. the locations are lat: ' + lat + ' long: ' + long);
+          deferred.resolve({lat:lat,long:long});
+        }, function (err) {
+          console.log(err);
+          deferred.resolve(err);
+        });
+      return deferred.promise;
+    }
+  }
+
+  // var watchOptions = {
+  //   timeout : 3000,
+  //   enableHighAccuracy: false // may cause errors if true
+  // };
+
+  // var watch = $cordovaGeolocation.watchPosition(watchOptions);
+  // watch.then(
+  //   null,
+  //   function(err) {
+  //     // error
+  //   },
+  //   function(position) {
+  //     var lat  = position.coords.latitude
+  //     var long = position.coords.longitude
+  //   });
+  //
+  //
+  // watch.clearWatch();
+  // // OR
+  // $cordovaGeolocation.clearWatch(watch)
+  //   .then(function(result) {
+  //     // success
+  //   }, function (error) {
+  //     // error
+  //   });
 })
 
 //Templates
