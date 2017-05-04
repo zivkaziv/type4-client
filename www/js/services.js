@@ -335,6 +335,58 @@ angular.module('starter.services', [])
   //   });
 })
 
+.service('GoogleAnalyticsService', function($rootScope){
+    return {
+      init : function(){
+        if (typeof analytics !== 'undefined'){
+          analytics.startTrackerWithId('UA-92906138-1');
+        }
+        else
+        {
+          console.log("Google Analytics plugin could not be loaded.")
+        }
+      },
+      registerUser:function(){
+        if (typeof analytics !== 'undefined'){
+          analytics.setUserId($rootScope.user.email);
+        }
+        else
+        {
+          console.log("Google Analytics plugin could not be loaded.")
+        }
+      },
+      sendEvent:function(category, action, label, value){
+        if (typeof analytics !== 'undefined'){
+          analytics.trackEvent(category, action, label, value);
+        }
+      },
+      trackView:function(viewName){
+        if (typeof analytics !== 'undefined'){
+          analytics.trackView(viewName);
+        }
+      }
+    }
+  })
+
+.service('MixpanelService', function(){
+    return {
+      init : function(){
+        if (typeof mixpanel !== 'undefined'){
+          mixpanel.init('3261e3a6a9b99054982e061e29221232');
+        }
+        else
+        {
+          console.log("Mixpanel plugin could not be loaded.")
+        }
+      },
+      track:function(eventName, eventProperties,onSuccess,onError){
+        if (typeof mixpanel !== 'undefined'){
+          mixpanel.track(eventName, eventProperties,onSuccess,onError);
+        }
+      }
+    }
+  })
+
 //Templates
 .factory('BlankFactory', function(){
 

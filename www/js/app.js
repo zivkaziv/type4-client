@@ -160,13 +160,20 @@ angular.module('starter',
     });
   })
 
+  .run(function($ionicPlatform,MixpanelService) {
+    $ionicPlatform.ready(function() {
+      MixpanelService.init();
+    });
+  })
+
   //run with deploy
   .run(function($ionicDeploy,
                 $ionicPlatform,
                 GoogleAnalyticsService,
                 $rootScope,
                 $state,
-                $ionicPopup) {
+                $ionicPopup,
+                MixpanelService) {
     var initApp = function () {
       console.log('Checking if we need to download new version');
       $ionicDeploy.check().then(function (response) {
@@ -211,6 +218,8 @@ angular.module('starter',
     };
 
     $ionicPlatform.ready(function() {
+
+      MixpanelService.track("Device is ready to be tracked");
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
       // for form inputs)
       if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
