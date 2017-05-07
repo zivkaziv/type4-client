@@ -107,7 +107,11 @@ angular.module('starter.controllers', [])
           $scope.handleIsSafe();
           $scope.isNeedToConfrim = $scope.product.ingredient_analysis.length === 0 ? false: true;
           GoogleAnalyticsService.sendEvent('search-results', 'found', 'barcode', $stateParams.productId);
-          MixpanelService.track('search-results',{'result':'found','barcode' : $stateParams.productId});
+          MixpanelService.track('search-results',{
+            'result':'found',
+            'barcode' : $stateParams.productId,
+            'num_of_ingredients':$scope.product.ingredient_analysis.length,
+            'analysis_result' : $scope.product.analysis_result});
           // console.log(product);
           if (!$rootScope.user || !$rootScope.user.searches) {
             $rootScope.user.searches = [];
@@ -116,9 +120,7 @@ angular.module('starter.controllers', [])
         } else {
           GoogleAnalyticsService.sendEvent('search-results', 'not-found', 'barcode', $stateParams.productId);
           MixpanelService.track('search-results',{'result':'not-found','barcode' : $stateParams.productId});
-
           $scope.noProductFound = true;
-
         }
       });
     }else{
