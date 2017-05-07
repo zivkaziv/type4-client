@@ -354,6 +354,7 @@ angular.module('starter.services', [])
       },
       setUser:function(user){
         if (typeof mixpanel !== 'undefined'){
+          mixpanel.identify(user.id,function(){},function(){});
           mixpanel.people.set({
             email:user.email,
             name:user.name
