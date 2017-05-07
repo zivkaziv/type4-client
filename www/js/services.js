@@ -85,7 +85,7 @@ angular.module('starter.services', [])
                                  $localStorage,
                                  PushNotificationService,
                                  $ionicUser,
-                                 $ionicAuth,GeoService){
+                                 $ionicAuth,GeoService,MixpanelService){
   var service = this;
   service.login = function ($email, $password) {
       var data = {
@@ -191,6 +191,7 @@ angular.module('starter.services', [])
   }
 
   function handlePushToken() {
+    MixpanelService.setUser($rootScope.user);
     PushNotificationService.register().then(function (token) {
       console.log("return value is " + token);
       $rootScope.user.push_token = token.token;
@@ -234,7 +235,7 @@ angular.module('starter.services', [])
   });
   return {
     get: function(){
-      return allergies;
+     return loadAllergies();
     }
   }
 })
@@ -335,39 +336,6 @@ angular.module('starter.services', [])
   //   });
 })
 
-.service('GoogleAnalyticsService', function($rootScope){
-    return {
-      init : function(){
-        if (typeof analytics !== 'undefined'){
-          analytics.startTrackerWithId('UA-92906138-1');
-        }
-        else
-        {
-          console.log("Google Analytics plugin could not be loaded.")
-        }
-      },
-      registerUser:function(){
-        if (typeof analytics !== 'undefined'){
-          analytics.setUserId($rootScope.user.email);
-        }
-        else
-        {
-          console.log("Google Analytics plugin could not be loaded.")
-        }
-      },
-      sendEvent:function(category, action, label, value){
-        if (typeof analytics !== 'undefined'){
-          analytics.trackEvent(category, action, label, value);
-        }
-      },
-      trackView:function(viewName){
-        if (typeof analytics !== 'undefined'){
-          analytics.trackView(viewName);
-        }
-      }
-    }
-  })
-
 .service('MixpanelService', function(){
     return {
       init : function(){
@@ -382,6 +350,14 @@ angular.module('starter.services', [])
       track:function(eventName, eventProperties,onSuccess,onError){
         if (typeof mixpanel !== 'undefined'){
           mixpanel.track(eventName, eventProperties,onSuccess,onError);
+        }
+      },
+      setUser:function(user){
+        if (typeof mixpanel !== 'undefined'){
+          mixpanel.people.set({
+            email:user.email,
+            name:user.name
+          });
         }
       }
     }
