@@ -73,6 +73,17 @@ angular.module('starter.services', [])
           }
         });
       });
+    },
+    reportAProblem: function(product,user) {
+      var data = {
+        product : product,
+        user : user
+      };
+      return $http.post(ApiEndpoint.url + 'report/product',data,config).then(function(response){
+        if(response.status == 200){
+          return response.data;
+        }
+      });
     }
   };
 })
@@ -162,6 +173,21 @@ angular.module('starter.services', [])
         }
       };
       $http.put(ApiEndpoint.url + 'account', user, config)
+        .then(function (response) {
+          deferred.resolve(response.data);
+        }, function (err) {
+          deferred.reject(err);
+        });
+      return deferred.promise;
+    };
+  service.clearHistory = function (user) {
+      var deferred = $q.defer();
+      var config = {
+        headers: {
+          "Authorization": 'Bearer ' + $rootScope.token
+        }
+      };
+      $http.put(ApiEndpoint.url + 'clear/history', user, config)
         .then(function (response) {
           deferred.resolve(response.data);
         }, function (err) {

@@ -79,6 +79,7 @@ angular.module('starter.controllers', [])
     $scope.product = {};
     $scope.isNeedToConfrim = false;
     $scope.noProductFound = false;
+    $scope.reportProductText = 'Report a problem';
 
     $scope.handleIsSafe = function(){
       if($scope.product && !$scope.product.hasOwnProperty('analysis_result') &&  $scope.product.ingredient_analysis.length > 0){
@@ -148,10 +149,16 @@ angular.module('starter.controllers', [])
     $state.go('tab.productscan');
   };
 
+  $scope.reportProblematicProduct = function(){
+    MixpanelService.track('report-product',{'user_confirmation':'reject','barcode' : $stateParams.productId});
+    $scope.reportProductText = 'Thank you :)';
+    Products.reportAProblem($scope.product,$rootScope.user);
+  }
+
 
 })
 
-.controller('AccountCtrl', function($scope,$state) {
+.controller('AccountCtrl', function($scope,$state,$rootScope) {
   $scope.settings = {
     enableFriends: true
   };
@@ -159,6 +166,10 @@ angular.module('starter.controllers', [])
   $scope.goToAllergies = function(){
     $state.go('tab.allergies');
   };
+
+  $scope.clearHistory = function(){
+    $rootScope.user.searches = [];
+  }
 })
 
 .controller('AllergiesCtrl', function($scope,$rootScope,AuthService,Allergies) {

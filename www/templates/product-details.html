@@ -39,9 +39,10 @@
             <div ng-if="product.category"><b>Category: </b>{{product.category}}</div>
           </div>
         </div>
+        <button class="button button-assertive" ng-click="reportProblematicProduct()" style="min-width: 80px;margin-top: 15px;margin-bottom: 15px;">{{reportProductText}}</button>
         <div ng-if="product.ingredient_analysis.length > 0" class="ingredients-container">
-            <div><b>Ingredients:</b></div>
-            <div class="ingredients">
+            <div><b style="font-size: 20px;margin-top: 15px">Ingredients:</b></div>
+            <div class="ingredients" style="margin-top: 15px">
               <div class="ingredient-item"
                    ng-class="ingredient.analysis == 'NOT_SENSITIVE' ? 'safe-ingredient' : (ingredient.analysis == 'SENSITIVE' ? 'not-safe-ingredient' : 'unknown-ingredient')"
                    ng-repeat="ingredient in product.ingredient_analysis | orderBy : '-analysis'">
