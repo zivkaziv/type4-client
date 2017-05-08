@@ -177,10 +177,17 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('AccountCtrl', function($scope,$state,$rootScope) {
+.controller('AccountCtrl', function($scope,$state,$rootScope,MixpanelService,AuthService) {
+  $scope.deleteHistoryText = 'Clear search history';
   $scope.settings = {
     enableFriends: true
   };
+
+  $scope.$on('$ionicView.enter', function() {
+    if($rootScope.user.searches && $rootScope.user.searches.length === 0){
+      $scope.deleteHistoryText = 'No history to clear';
+    }
+  });
 
   $scope.goToAllergies = function(){
     MixpanelService.track('account-button-clicked',{'button name' : 'allergies'});
@@ -189,7 +196,9 @@ angular.module('starter.controllers', [])
 
   $scope.clearHistory = function(){
     MixpanelService.track('account-button-clicked',{'button name' : 'clear history'});
+    AuthService.clearHistory($rootScope.user);
     $rootScope.user.searches = [];
+    $scope.deleteHistoryText = 'Cleared';
   }
 })
 
