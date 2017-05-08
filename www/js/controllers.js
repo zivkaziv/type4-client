@@ -95,6 +95,8 @@ angular.module('starter.controllers', [])
       if($scope.product.ingredient_analysis.length === 0){
         $scope.product.analysis_result ='UNKNOWN';
       }
+
+      updateReportButtonText();
     };
 
     if(!$location.search().from_history) {
@@ -141,25 +143,38 @@ angular.module('starter.controllers', [])
         }
       }
     }
-  $scope.confirm = function(){
-    GoogleAnalyticsService.sendEvent('search-results','confirm','barcode', '$stateParams.productId');
-    MixpanelService.track('search-results',{'user_confirmation':'confirm','barcode' : $stateParams.productId});
-    $scope.isNeedToConfrim = false;
+    $scope.confirm = function(){
+      GoogleAnalyticsService.sendEvent('search-results','confirm','barcode', '$stateParams.productId');
+      MixpanelService.track('search-results',{'user_confirmation':'confirm','barcode' : $stateParams.productId});
+      $scope.isNeedToConfrim = false;
+      };
+
+    $scope.reject = function(){
+      GoogleAnalyticsService.sendEvent('search-results','reject','barcode', '$stateParams.productId');
+      MixpanelService.track('search-results',{'user_confirmation':'reject','barcode' : $stateParams.productId});
+      $state.go('tab.productscan');
     };
 
-  $scope.reject = function(){
-    GoogleAnalyticsService.sendEvent('search-results','reject','barcode', '$stateParams.productId');
-    MixpanelService.track('search-results',{'user_confirmation':'reject','barcode' : $stateParams.productId});
-    $state.go('tab.productscan');
-  };
+    $scope.reportProblematicProduct = function(){
+      MixpanelService.track('report-product',{'user_confirmation':'reject','barcode' : $stateParams.productId});
+      $scope.reportProductText = 'Thank you :)';
+      Products.reportAProblem($scope.product,$rootScope.user);
+      if(!$scope.product.reported_users){
+        $scope.product.reported_users = [];
+      }
+      $scope.product.reported_users.push($rootScope.user);
+    };
 
-  $scope.reportProblematicProduct = function(){
-    MixpanelService.track('report-product',{'user_confirmation':'reject','barcode' : $stateParams.productId});
-    $scope.reportProductText = 'Thank you :)';
-    Products.reportAProblem($scope.product,$rootScope.user);
+    function updateReportButtonText(){
+      if($scope.product.reported_users){
+        for(var reportedUserIndex = 0; reportedUserIndex < $scope.product.reported_users.length; reportedUserIndex++) {
+          if ($scope.product.reported_users[reportedUserIndex].email === $rootScope.user.email) {
+            $scope.reportProductText = 'Already reported';
+            break;
+          }
+      }
+    }
   }
-
-
 })
 
 .controller('AccountCtrl', function($scope,$state,$rootScope) {
