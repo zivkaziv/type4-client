@@ -108,8 +108,12 @@ angular.module('starter.controllers', [])
           $scope.handleIsSafe();
           $scope.isNeedToConfrim = $scope.product.ingredient_analysis.length === 0 ? false: true;
           GoogleAnalyticsService.sendEvent('search-results', 'found', 'barcode', $stateParams.productId);
+          var eventName = 'found';
+          if($scope.product.ingredient_analysis.length == 0){
+            eventName = 'found-no-ingredient'
+          }
           MixpanelService.track('search-results',{
-            'result':'found',
+            'result': eventName,
             'barcode' : $stateParams.productId,
             'num_of_ingredients':$scope.product.ingredient_analysis.length,
             'analysis_result' : $scope.product.analysis_result});
@@ -164,10 +168,12 @@ angular.module('starter.controllers', [])
   };
 
   $scope.goToAllergies = function(){
+    MixpanelService.track('account-button-clicked',{'button name' : 'allergies'});
     $state.go('tab.allergies');
   };
 
   $scope.clearHistory = function(){
+    MixpanelService.track('account-button-clicked',{'button name' : 'clear history'});
     $rootScope.user.searches = [];
   }
 })
