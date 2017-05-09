@@ -17,7 +17,7 @@ angular.module('starter',
   ])
 
   .constant('ApiEndpoint', {
-    url: 'https://type4.herokuapp.com/'
+    url: 'https://typeiv.herokuapp.com/'
   })
 
   .config(function($stateProvider, $urlRouterProvider) {

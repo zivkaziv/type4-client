@@ -236,12 +236,12 @@ angular.module('starter.services', [])
   return service;
 })
 
-.service('Allergies', function($http,$q){
+.service('Allergies', function($http,$q,ApiEndpoint){
   var allergies = [];
   function loadAllergies() {
     var deferred = $q.defer();
     if(allergies.length == 0) {
-      var url = 'https://type4.herokuapp.com/allergies';
+      var url = ApiEndpoint.url + 'allergies';
       $http.get(url).then(function (response) {
         if (response.status == 200) {
           deferred.resolve(response.data);
