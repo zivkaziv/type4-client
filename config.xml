@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.ionicframework.type4ionic647415" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>type4Ionic</name>
+    <name>TypeIV</name>
     <description>
         TypeIV is helping you to deal with your allergies.
     </description>
-    <author email="info@type4app.com" href="http://www.type4app.com/">
+    <author email="info@type4app.com" href="http://www.TypeIV.com/">
       TypeIV
     </author>
     <content src="index.html" />
