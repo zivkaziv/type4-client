@@ -91,10 +91,13 @@ angular.module('starter.services', [])
         product : product,
         user : user
       };
-      return $http.post(ApiEndpoint.url + 'react/product',data,config).then(function(response){
-        if(response.status == 200){
-          return response.data;
-        }
+      return GeoService.getCurrentLocation().then(function(position) {
+        data.position = position;
+         return $http.post(ApiEndpoint.url + 'react/product', data, config).then(function (response) {
+          if (response.status == 200) {
+            return response.data;
+          }
+        });
       });
     }
   };
