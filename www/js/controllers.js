@@ -80,6 +80,8 @@ angular.module('starter.controllers', [])
     $scope.isNeedToConfrim = false;
     $scope.noProductFound = false;
     $scope.reportProductText = 'Report a problem';
+    $scope.reactedText = 'I reacted to this product';
+    $scope.show = false;
 
     $scope.handleIsSafe = function(){
       if($scope.product && !$scope.product.hasOwnProperty('analysis_result') &&  $scope.product.ingredient_analysis.length > 0){
@@ -165,7 +167,21 @@ angular.module('starter.controllers', [])
       $scope.product.reported_users.push($rootScope.user);
     };
 
-    function updateReportButtonText(){
+    $scope.reportReacted = function(){
+      MixpanelService.track('report-product',{'user_confirmation':'reject','barcode' : $stateParams.productId});
+      $scope.reportProductText = 'Reported';
+      Products.reportReaction($scope.product,$rootScope.user);
+    };
+
+    $scope.toggleGroup = function() {
+      $scope.show = !this.show;
+    };
+
+    $scope.isGroupShown = function() {
+      return $scope.show;
+    };
+
+  function updateReportButtonText(){
       if($scope.product.reported_users){
         for(var reportedUserIndex = 0; reportedUserIndex < $scope.product.reported_users.length; reportedUserIndex++) {
           if ($scope.product.reported_users[reportedUserIndex].email === $rootScope.user.email) {

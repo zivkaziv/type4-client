@@ -84,6 +84,17 @@ angular.module('starter.services', [])
           return response.data;
         }
       });
+    },
+    reportReaction: function(product,user) {
+      var data = {
+        product : product,
+        user : user
+      };
+      return $http.post(ApiEndpoint.url + 'react/product',data,config).then(function(response){
+        if(response.status == 200){
+          return response.data;
+        }
+      });
     }
   };
 })
