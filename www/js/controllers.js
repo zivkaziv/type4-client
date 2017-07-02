@@ -71,7 +71,7 @@ angular.module('starter.controllers', [])
     // $state.go('tab.product-details',{productId: 1234});
 
     //No ingredients
-    $state.go('tab.product-details',{productId: 7290002331018});
+    $state.go('tab.product-details',{productId: 0037000143109});
   };
 })
 
