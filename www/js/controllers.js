@@ -168,8 +168,8 @@ angular.module('starter.controllers', [])
     };
 
     $scope.reportReacted = function(){
-      MixpanelService.track('report-product',{'user_confirmation':'reject','barcode' : $stateParams.productId});
-      $scope.reportProductText = 'Reported';
+      MixpanelService.track('reacted-product',{'user_confirmation':'reject','barcode' : $stateParams.productId});
+      $scope.reactedText = 'Reported';
       Products.reportReaction($scope.product,$rootScope.user);
     };
 
