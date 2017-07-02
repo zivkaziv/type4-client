@@ -58,7 +58,8 @@ angular.module('starter.services', [])
 
   var config = {
     headers: {
-      "Authorization": 'Bearer ' + $rootScope.token
+      "Authorization": 'Bearer ' + $rootScope.token,
+      "Content-Type": 'application/json'
     }};
 
   return {

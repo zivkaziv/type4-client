@@ -13,8 +13,8 @@
           <div class="product-image-container" style="min-width: 40%; text-align: center">
             <img ng-src="{{product.image_url}}" zoom-src="{{product.image_url}}" zoom-view style="max-height: 150px">
             <ANY ng-switch="product.analysis_result">
-              <ANY ng-switch-when="SAFE"><img ng-src="img/safe_mark.png" style="max-height: 120px;position: absolute;left: 7%;top:3%"/></ANY>
-              <ANY ng-switch-when="NOT_SAFE"><img ng-src="img/not_safe_mark.png" style="max-height: 120px;position: absolute;left: 10%;top:3%"/></ANY>
+              <ANY ng-switch-when="SAFE"><img ng-src="img/safe_mark.png" style="max-height: 120px;position: absolute;left: 7%;top:10px"/></ANY>
+              <ANY ng-switch-when="NOT_SAFE"><img ng-src="img/not_safe_mark.png" style="max-height: 120px;position: absolute;left: 10%;top:10px"/></ANY>
               <ANY ng-switch-default></ANY>
             </ANY>
           </div>
@@ -45,7 +45,8 @@
             </ion-item>
             <!--Items-->
             <ion-item class="item-accordion"
-                      ng-repeat="ingredient in product.ingredient_analysis | orderBy : '-analysis'"
+            ng-class="ingredient.analysis == 'NOT_SENSITIVE' ? 'safe-ingredient' : (ingredient.analysis == 'SENSITIVE' ? 'not-safe-ingredient' : 'unknown-ingredient')"
+            ng-repeat="ingredient in product.ingredient_analysis | orderBy : '-analysis'"
                       ng-show="isGroupShown()">
               {{ingredient.name}}
             </ion-item>
