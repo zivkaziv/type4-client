@@ -74,16 +74,17 @@
   flex-direction: column;
 }
 
-#product-details-content .product-container .product-details-container .ingredients .not-safe-ingredient{
+
+#product-details-content .list .not-safe-ingredient{
   color:red;
   font-weight: bold;
 }
 
-#product-details-content .product-container .product-details-container .ingredients .safe-ingredient{
+#product-details-content .list .safe-ingredient{
   color:green;
 }
 
-#product-details-content .product-container .product-details-container .ingredients .unknown-ingredient{
+#product-details-content .list .unknown-ingredient{
   color:orange;
 }
 

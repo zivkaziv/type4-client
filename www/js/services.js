@@ -171,6 +171,8 @@ angular.module('starter.services', [])
           if (response.data.token) {
             $rootScope.token = response.data.token;
             $rootScope.user = response.data.user;
+            $localStorage.token = $rootScope.token;
+            $localStorage.email = $rootScope.user.email;
           }
           handleIonicUser($rootScope.user);
           deferred.resolve(response.data);

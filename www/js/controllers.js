@@ -340,7 +340,7 @@ angular.module('starter.controllers', [])
         }
         $scope.isError = true;
       });
-  }
+  };
   $scope.isDisabled = true;
   // style strength
   $scope.passwordStrength = {
