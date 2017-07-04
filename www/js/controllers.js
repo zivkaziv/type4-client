@@ -256,7 +256,8 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('loginCtrl', function($scope, $rootScope, $state, AuthService,$ionicLoading,$localStorage,GoogleAnalyticsService,MixpanelService) {
+.controller('loginCtrl',
+  function($scope, $rootScope, $state, AuthService,$ionicLoading,$localStorage,GoogleAnalyticsService,MixpanelService) {
 
   ionic.Platform.ready(function(){
 
@@ -317,7 +318,8 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('registerCtrl', function($scope,AuthService,$state,$ionicLoading) {
+.controller('registerCtrl',
+  function($scope,AuthService,$state,$ionicLoading,MixpanelService) {
   $scope.user= {};
   $scope.isError = false;
   $scope.errorMessage = '';
