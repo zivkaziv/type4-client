@@ -76,12 +76,23 @@ angular.module('starter',
           }
         }
       })
+
       .state('tab.product-details', {
         url: '/product/:productId',
         views: {
           'tab-product-scan': {
             templateUrl: 'templates/product-details.html',
             controller: 'ProductDetailCtrl'
+          }
+        }
+      })
+
+      .state('tab.add-product', {
+        url: '/addproduct/:productId',
+        views: {
+          'tab-product-scan': {
+            templateUrl: 'templates/add-product.html',
+            controller: 'AddProductCtrl'
           }
         }
       })

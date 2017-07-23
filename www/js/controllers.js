@@ -43,7 +43,7 @@ angular.module('starter.controllers', [])
 .controller('ScanProductCtrl', function($scope,$cordovaBarcodeScanner,Products,$state,GoogleAnalyticsService,MixpanelService) {
   $scope.$on('$ionicView.enter', function() {
     // Code you want executed every time view is opened
-    $scope.scanBarcode();
+    // $scope.scanBarcode();
     MixpanelService.track('menu-button-clicked',{'button name' : 'scan'});
     GoogleAnalyticsService.sendEvent('menu-buttons','scan','scan','click');
   });
@@ -71,7 +71,7 @@ angular.module('starter.controllers', [])
     // $state.go('tab.product-details',{productId: 1234});
 
     //No ingredients
-    $state.go('tab.product-details',{productId: 0037000143109});
+    $state.go('tab.product-details',{productId: 0037000143104});
   };
 })
 
@@ -181,7 +181,7 @@ angular.module('starter.controllers', [])
       return $scope.show;
     };
 
-  function updateReportButtonText(){
+    function updateReportButtonText(){
       if($scope.product.reported_users){
         for(var reportedUserIndex = 0; reportedUserIndex < $scope.product.reported_users.length; reportedUserIndex++) {
           if ($scope.product.reported_users[reportedUserIndex].email === $rootScope.user.email) {
@@ -191,6 +191,10 @@ angular.module('starter.controllers', [])
       }
     }
   }
+
+    $scope.addProduct = function(){
+      $state.go('tab.add-product',{productId: $stateParams.productId});
+    }
 })
 
 .controller('AccountCtrl', function($scope,$state,$rootScope,MixpanelService,AuthService) {
@@ -372,4 +376,37 @@ angular.module('starter.controllers', [])
       $scope.passwordQuality = 'ion-thumbsdown assertive';
     }
   };
+})
+
+.controller('AddProductCtrl',
+  function($scope,$cordovaCamera,ImageUploadFactory,$stateParams){
+    $scope.takePics = function(){
+      document.addEventListener("deviceready", function () {
+        var options = {
+          quality: 100,
+          destinationType: Camera.DestinationType.FILE_URI,
+          sourceType: Camera.PictureSourceType.CAMERA,
+          allowEdit: true,
+          encodingType: Camera.EncodingType.JPEG,
+          targetWidth: 400,
+          targetHeight: 400,
+          popoverOptions: CameraPopoverOptions,
+          saveToPhotoAlbum: false,
+          correctOrientation:true
+        };
+
+        $cordovaCamera.getPicture(options).then(function(imageData) {
+          // var image = document.getElementById('myImage');
+          // image.src = "data:image/jpeg;base64," + imageData;
+          console.log('before upload image');
+          ImageUploadFactory.uploadImage(imageData).then(function(){
+            console.log('done');
+          })
+        }, function(err) {
+          // error
+          console.log(err);
+        });
+
+      }, false);
+    }
 });

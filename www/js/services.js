@@ -408,8 +408,10 @@ angular.module('starter.services', [])
   })
 
 //Templates
-.factory('BlankFactory', function(){
-
+.factory('CloudinaryConfigs', function(){
+  this.upload_preset='pzhlnrnu';
+  this.api_url = 'https://api.cloudinary.com/v1_1/typeiv/image/upload';
+  return this;
 })
 
 .service('BlankService', function(){
@@ -441,6 +443,42 @@ angular.module('starter.services', [])
           attrs.$set('ng-src', attrs.errSrc);
         }
       });
+    }
+  }
+})
+
+.factory('ImageUploadFactory', function ($q, $ionicLoading, $cordovaFileTransfer, CloudinaryConfigs) {
+  return {
+    uploadImage: function (imageURI) {
+      console.log('start upload image.');
+      var deferred = $q.defer();
+
+      uploadFile();
+
+      function uploadFile() {
+        $ionicLoading.show({template : 'Uploading image...'});
+        // Add the Cloudinary "upload preset" name to the headers
+        var uploadOptions = {
+          params : { 'upload_preset': CloudinaryConfigs.upload_preset}
+        };
+        $cordovaFileTransfer
+        // Your Cloudinary URL will go here
+          .upload(CloudinaryConfigs.api_url, imageURI, uploadOptions)
+
+          .then(function(result) {
+            // Let the user know the upload is completed
+            $ionicLoading.show({template : 'Done.', duration: 1000});
+            var response = JSON.parse(decodeURIComponent(result.response));
+            deferred.resolve(response);
+          }, function(err) {
+            // Uh oh!
+            $ionicLoading.show({template : 'Failed.', duration: 3000});
+            deferred.reject(err);
+          }, function (progress) {
+
+          });
+      }
+      return deferred.promise;
     }
   }
 });

@@ -4,9 +4,9 @@
       <ion-spinner  icon="lines"></ion-spinner>
     </div>
     <div ng-show="!isLoading" class="product-container">
-
       <div ng-show="noProductFound" class="no-product-found">
-        Product not found yet<br/>Work in progress<br/><br/><br/><b>{{product.barcode_id}}</b>
+        Help us to add this product<br/><br/><br/><b>{{product.barcode_id}}</b><br/><br/>
+        <button class="button button-positive" ng-click="addProduct()" style="min-width: 80px;">Help us</button>
       </div>
       <div ng-if="!isNeedToConfrim && !noProductFound" class="product-details-container">
         <div class="product-metadata-container">
