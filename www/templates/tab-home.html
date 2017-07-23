@@ -23,7 +23,7 @@
         <ion-content>
           <a ng-if="search.name && search.image_url" class="item item-thumbnail-left" ng-repeat="search in user.searches | orderBy:'-'"
              href="#/tab/home/product/{{search.barcode_id}}?from_history=true">
-            <img ng-src="{{search.image_url}}">
+            <img err-src='/img/no_image.png' ng-src="{{search.image_url}}">
             <h2>{{search.name}}</h2>
             <p>{{search.scraped_time | date}}</p>
           </a>

@@ -414,4 +414,33 @@ angular.module('starter.services', [])
 
 .service('BlankService', function(){
 
+})
+
+.directive('imageonload', function() {
+  return {
+    restrict: 'A',
+    link: function(scope, element, attrs) {
+      var selfAttrs = attrs;
+      element.bind('load', function() {
+        console.log('image is loaded');
+      });
+      element.bind('error', function(){
+        scope.$apply(attrs.src='/img/no_image.png');
+        console.log('image could not be loaded');
+      });
+    }
+  };
+})
+
+.directive('errSrc', function() {
+  return {
+    link: function(scope, element, attrs) {
+      element.bind('error', function() {
+        if (attrs.src != attrs.errSrc) {
+          attrs.$set('src', attrs.errSrc);
+          attrs.$set('ng-src', attrs.errSrc);
+        }
+      });
+    }
+  }
 });
