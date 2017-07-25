@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.typeiv.typeivapp" version="1.0.6" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.typeiv.typeivapp" version="1.0.7" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>TypeIV</name>
     <description>
         TypeIV is helping you to deal with your allergies.
@@ -66,9 +66,20 @@
     <plugin name="cordova-plugin-camera" spec="~2.4.1">
         <variable name="CAMERA_USAGE_DESCRIPTION" value="For adding missing products" />
         <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="For adding missing products" />
-        <variable name="NSCameraUsageDescription" value="For adding missing products" />
-        <variable name="NSPhotoLibraryUsageDescription" value="For adding missing products" />
+        <variable name="NSCameraUsageDescription" value="$(PRODUCT_NAME) uses photos" />
+        <variable name="NSPhotoLibraryUsageDescription" value="$(PRODUCT_NAME) uses photos" />
     </plugin>
+    <plugin name="org.apache.cordova.camera">
+      <variable name="CAMERA_USAGE_DESCRIPTION" value="App would like to access the camera." />
+      <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="App would like to access the library." />
+    </plugin>
+    <config-file parent="NSPhotoLibraryUsageDescription" platform="ios" target="*-Info.plist">
+        <string>$(PRODUCT_NAME) uses photos</string>
+    </config-file>
+    <config-file parent="NSCameraUsageDescription" platform="ios" target="*-Info.plist">
+        <string>$(PRODUCT_NAME) uses photos</string>
+    </config-file>
     <plugin name="cordova-plugin-file" spec="~4.3.3" />
     <plugin name="cordova-plugin-file-transfer" spec="~1.6.3" />
+    <plugin name="cordova-custom-config" spec="~4.0.2" />
 </widget>
