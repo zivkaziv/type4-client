@@ -71,11 +71,18 @@ angular.module('starter.controllers', [])
     // $state.go('tab.product-details',{productId: 1234});
 
     //No ingredients
-    $state.go('tab.product-details',{productId: 0037000143104});
+    $state.go('tab.product-details',{productId: 8717163023839});
+    // $state.go('tab.product-details',{productId: 0037000143104});
   };
 })
 
-.controller('ProductDetailCtrl', function($scope, $stateParams, Products,$rootScope,$location,$state,GoogleAnalyticsService,MixpanelService) {
+.controller('ProductDetailCtrl',
+  function($scope, $stateParams,
+           Products,$rootScope,
+           $location,$state,
+           GoogleAnalyticsService,
+           MixpanelService,
+           $cordovaCamera,ImageUploadFactory) {
     $scope.product = {};
     $scope.isNeedToConfrim = false;
     $scope.noProductFound = false;
@@ -102,36 +109,40 @@ angular.module('starter.controllers', [])
     };
 
     if(!$location.search().from_history) {
-      MixpanelService.track('product-details',{'reference':'scan','barcode' : $stateParams.productId});
-      GoogleAnalyticsService.sendEvent('product-details','scan','barcode', $stateParams.productId);
-      $scope.isLoading = true;
-      Products.get($stateParams.productId).then(function (product) {
-        $scope.isLoading = false;
-        $scope.product = product;
-        if (product.name) {
-          $scope.handleIsSafe();
-          $scope.isNeedToConfrim = $scope.product.ingredient_analysis.length === 0 ? false: true;
-          GoogleAnalyticsService.sendEvent('search-results', 'found', 'barcode', $stateParams.productId);
-          var eventName = 'found';
-          if($scope.product.ingredient_analysis.length == 0){
-            eventName = 'found-no-ingredient'
+      if(!foundProductInUserHistory()) {
+        MixpanelService.track('product-details',{'reference':'scan','barcode' : $stateParams.productId});
+        GoogleAnalyticsService.sendEvent('product-details','scan','barcode', $stateParams.productId);
+        $scope.isLoading = true;
+        Products.get($stateParams.productId).then(function (product) {
+          $scope.isLoading = false;
+          $scope.product = product;
+          if (product.name) {
+            $scope.handleIsSafe();
+            $scope.isNeedToConfrim = $scope.product.ingredient_analysis.length === 0 ? false : true;
+            GoogleAnalyticsService.sendEvent('search-results', 'found', 'barcode', $stateParams.productId);
+            var eventName = 'found';
+            if ($scope.product.ingredient_analysis.length == 0) {
+              eventName = 'found-no-ingredient'
+            }
+            MixpanelService.track('search-results', {
+              'result': eventName,
+              'barcode': $stateParams.productId,
+              'num_of_ingredients': $scope.product.ingredient_analysis.length,
+              'analysis_result': $scope.product.analysis_result
+            });
+            // console.log(product);
+            if (!$rootScope.user || !$rootScope.user.searches) {
+              $rootScope.user.searches = [];
+            }
+            $rootScope.user.searches.push(product);
+          } else {
+            GoogleAnalyticsService.sendEvent('search-results', 'not-found', 'barcode', $stateParams.productId);
+            MixpanelService.track('search-results', {'result': 'not-found', 'barcode': $stateParams.productId});
+            $scope.noProductFound = true;
+            $state.go('tab.add-product', {productId: $stateParams.productId});
           }
-          MixpanelService.track('search-results',{
-            'result': eventName,
-            'barcode' : $stateParams.productId,
-            'num_of_ingredients':$scope.product.ingredient_analysis.length,
-            'analysis_result' : $scope.product.analysis_result});
-          // console.log(product);
-          if (!$rootScope.user || !$rootScope.user.searches) {
-            $rootScope.user.searches = [];
-          }
-          $rootScope.user.searches.push(product);
-        } else {
-          GoogleAnalyticsService.sendEvent('search-results', 'not-found', 'barcode', $stateParams.productId);
-          MixpanelService.track('search-results',{'result':'not-found','barcode' : $stateParams.productId});
-          $scope.noProductFound = true;
-        }
-      });
+        });
+      }
     }else{
       for(var searchIndex = 0; searchIndex < $rootScope.user.searches.length; searchIndex++){
         if($rootScope.user.searches[searchIndex].barcode_id === $stateParams.productId) {
@@ -145,6 +156,7 @@ angular.module('starter.controllers', [])
         }
       }
     }
+
     $scope.confirm = function(){
       GoogleAnalyticsService.sendEvent('search-results','confirm','barcode', '$stateParams.productId');
       MixpanelService.track('search-results',{'user_confirmation':'confirm','barcode' : $stateParams.productId});
@@ -192,9 +204,45 @@ angular.module('starter.controllers', [])
     }
   }
 
+    function foundProductInUserHistory(){
+      for(var searchIndex = 0; searchIndex < $rootScope.user.searches.length; searchIndex++){
+        if($rootScope.user.searches[searchIndex].barcode_id === $stateParams.productId) {
+          $scope.product = $rootScope.user.searches[searchIndex];
+          $scope.handleIsSafe();
+          $scope.isNeedToConfrim = false;
+          GoogleAnalyticsService.sendEvent('product-details','already_scanned','barcode', $stateParams.productId);
+          MixpanelService.track('product-details',{'reference':'already_scanned','barcode_id' : $stateParams.productId});
+          return true;
+        }
+      }
+      return false;
+    }
+
     $scope.addProduct = function(){
       $state.go('tab.add-product',{productId: $stateParams.productId});
-    }
+    };
+
+    $scope.takeIngredientPic = function(){
+    document.addEventListener("deviceready", function () {
+      var options = {
+        quality: 100,
+        destinationType: Camera.DestinationType.FILE_URI,
+        sourceType: Camera.PictureSourceType.CAMERA,
+        allowEdit: true,
+        encodingType: Camera.EncodingType.JPEG,
+        targetWidth: 500,
+        targetHeight: 500,
+        popoverOptions: CameraPopoverOptions,
+        saveToPhotoAlbum: false,
+        correctOrientation:true
+      };
+
+      $cordovaCamera.getPicture(options).then(function(imageData2) {
+        ImageUploadFactory.uploadImage(imageData2,true,$stateParams.productId,'ingredients').then(function(){console.log('finished - pic2');});
+        $state.go('tab.home');
+      });
+    }, false);
+  }
 })
 
 .controller('AccountCtrl', function($scope,$state,$rootScope,MixpanelService,AuthService) {
@@ -379,7 +427,8 @@ angular.module('starter.controllers', [])
 })
 
 .controller('AddProductCtrl',
-  function($scope,$cordovaCamera,ImageUploadFactory,$stateParams){
+  function($scope,$cordovaCamera,ImageUploadFactory,$stateParams,$ionicLoading,$timeout){
+    $scope.barcodeId = $stateParams.productId;
     $scope.takePics = function(){
       document.addEventListener("deviceready", function () {
         var options = {
@@ -388,25 +437,33 @@ angular.module('starter.controllers', [])
           sourceType: Camera.PictureSourceType.CAMERA,
           allowEdit: true,
           encodingType: Camera.EncodingType.JPEG,
-          targetWidth: 400,
-          targetHeight: 400,
+          targetWidth: 500,
+          targetHeight: 500,
           popoverOptions: CameraPopoverOptions,
           saveToPhotoAlbum: false,
           correctOrientation:true
         };
 
-        $cordovaCamera.getPicture(options).then(function(imageData) {
-          // var image = document.getElementById('myImage');
-          // image.src = "data:image/jpeg;base64," + imageData;
-          console.log('before upload image');
-          ImageUploadFactory.uploadImage(imageData).then(function(){
-            console.log('done');
-          })
-        }, function(err) {
-          // error
-          console.log(err);
-        });
-
+        $ionicLoading.show({template: 'Take a picture of the item itself'});
+        $timeout(function(){
+          $ionicLoading.hide();
+          $cordovaCamera.getPicture(options).then(function(imageData1) {
+            // var image = document.getElementById('myImage');
+            // image.src = "data:image/jpeg;base64," + imageData;
+            ImageUploadFactory.uploadImage(imageData1,false,$scope.barcodeId,'product').then(function(){console.log('finished - pic1');});
+            $ionicLoading.show({template: 'And now the ingredients'});
+            $timeout(function(){
+              $ionicLoading.hide();
+              $cordovaCamera.getPicture(options).then(function(imageData2) {
+                ImageUploadFactory.uploadImage(imageData2,true,$scope.barcodeId,'ingredients').then(function(){console.log('finished - pic2');})
+                $state.go('tab.home');
+              });
+            }, 2500);
+          }, function(err) {
+            // error
+            console.log(err);
+          });
+        }, 2500);
       }, false);
     }
 });

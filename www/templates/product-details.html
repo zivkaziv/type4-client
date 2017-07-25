@@ -54,10 +54,15 @@
         </div>
         <div ng-if="product.ingredient_analysis.length === 0" class="ingredients-container"
              style="text-align: center;
-              font-size: 22px;
+              font-size: 18px;
               margin-top: 10%;
-              line-height: 40px;">
-          <div><b>Nothing here yet<br/>We're working on it!</b></div>
+              line-height: 18px;">
+          <div>Ohh.. the <b>bad</b> news are that we didn't find the product ingredients</div>
+          <br/>
+          <div>But the <b>good</b> news are that you can help the community with it</div>
+          <br/>
+          <div>Just take one picture of the ingredients part</div>
+          <button class="button button-positive" ng-click="takeIngredientPic()" style="min-width: 80px; margin-top: 20px;">Take a picture</button>
         </div>
       </div>
       <div ng-if="isNeedToConfrim && !noProductFound" class="product-confirm-container">
