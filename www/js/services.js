@@ -99,6 +99,39 @@ angular.module('starter.services', [])
           }
         });
       });
+    },
+    addManualProduct:function(imageUrl,IngredientsUrl,barcodeId,user){
+      var data = {
+        product_image_url : imageUrl,
+        ingredients_image_url : IngredientsUrl,
+        barcode_id : barcodeId,
+        user : user
+      };
+      return GeoService.getCurrentLocation().then(function(position) {
+        data.location = position;
+        return $http.post(ApiEndpoint.url + 'add/product', data, config).then(function (response) {
+          if (response.status == 200) {
+            return response.data;
+          }
+        });
+      });
+    },
+    addMissingIngredients:function(product,IngredientsUrl,user){
+      var data = {
+        product:product,
+        product_image_url : product.image_url,
+        ingredients_image_url : IngredientsUrl,
+        barcode_id : product.barcodeId,
+        user : user
+      };
+      return GeoService.getCurrentLocation().then(function(position) {
+        data.location = position;
+        return $http.post(ApiEndpoint.url + 'add/product', data, config).then(function (response) {
+          if (response.status == 200) {
+            return response.data;
+          }
+        });
+      });
     }
   };
 })
@@ -411,6 +444,7 @@ angular.module('starter.services', [])
 .factory('CloudinaryConfigs', function(){
   this.upload_preset='pzhlnrnu';
   this.api_url = 'https://api.cloudinary.com/api/v1_1/typeiv/image/upload/';
+  this.image_url = 'http://res.cloudinary.com/typeiv/image/upload/v1501142731/';
   return this;
 })
 
@@ -473,7 +507,7 @@ angular.module('starter.services', [])
           .then(function(result) {
             if(showLoading) {
               // Let the user know the upload is completed
-              $ionicLoading.show({template: 'Done.', duration: 1000});
+              $ionicLoading.show({template: 'Thanks.. this product will be there soon', duration: 2000});
             }
             var response = JSON.parse(decodeURIComponent(result.response));
             deferred.resolve(response);

@@ -71,8 +71,8 @@ angular.module('starter.controllers', [])
     // $state.go('tab.product-details',{productId: 1234});
 
     //No ingredients
-    $state.go('tab.product-details',{productId: 8717163023839});
-    // $state.go('tab.product-details',{productId: 0037000143104});
+    // $state.go('tab.product-details',{productId: 8717163023839});
+    $state.go('tab.product-details',{productId: 0037000143104});
   };
 })
 
@@ -82,7 +82,8 @@ angular.module('starter.controllers', [])
            $location,$state,
            GoogleAnalyticsService,
            MixpanelService,
-           $cordovaCamera,ImageUploadFactory) {
+           $cordovaCamera,ImageUploadFactory,
+           CloudinaryConfigs) {
     $scope.product = {};
     $scope.isNeedToConfrim = false;
     $scope.noProductFound = false;
@@ -238,7 +239,12 @@ angular.module('starter.controllers', [])
       };
 
       $cordovaCamera.getPicture(options).then(function(imageData2) {
-        ImageUploadFactory.uploadImage(imageData2,true,$stateParams.productId,'ingredients').then(function(){console.log('finished - pic2');});
+        var currDate = new Date();
+        var ingredientsImageName = 'ingredients_'+currDate.getTime();
+        ImageUploadFactory.uploadImage(imageData2,true,$stateParams.productId,ingredientsImageName).then(function(){console.log('finished - pic2');});
+        Products.addMissingIngredients($scope.product,
+          CloudinaryConfigs.image_url +'products/' + $stateParams.productId + '/' + ingredientsImageName +'.jpeg',
+          $rootScope.user);
         $state.go('tab.home');
       });
     }, false);
@@ -427,7 +433,13 @@ angular.module('starter.controllers', [])
 })
 
 .controller('AddProductCtrl',
-  function($scope,$cordovaCamera,ImageUploadFactory,$stateParams,$ionicLoading,$timeout){
+  function($scope,
+           $state,
+           $cordovaCamera,
+           ImageUploadFactory,
+           $stateParams,$ionicLoading,
+           $timeout,Products,
+           CloudinaryConfigs,$rootScope){
     $scope.barcodeId = $stateParams.productId;
     $scope.takePics = function(){
       document.addEventListener("deviceready", function () {
@@ -450,13 +462,21 @@ angular.module('starter.controllers', [])
           $cordovaCamera.getPicture(options).then(function(imageData1) {
             // var image = document.getElementById('myImage');
             // image.src = "data:image/jpeg;base64," + imageData;
-            ImageUploadFactory.uploadImage(imageData1,false,$scope.barcodeId,'product').then(function(){console.log('finished - pic1');});
+            var currDate = new Date();
+            var productImageName = 'product_'+currDate.getTime();
+            ImageUploadFactory.uploadImage(imageData1,false,$scope.barcodeId,productImageName).then(function(){console.log('finished - pic1');});
             $ionicLoading.show({template: 'And now the ingredients'});
             $timeout(function(){
               $ionicLoading.hide();
               $cordovaCamera.getPicture(options).then(function(imageData2) {
-                ImageUploadFactory.uploadImage(imageData2,true,$scope.barcodeId,'ingredients').then(function(){console.log('finished - pic2');})
-                $state.go('tab.home');
+                var ingredientsImageName = 'ingredients'+currDate.getTime();
+                ImageUploadFactory.uploadImage(imageData2,true,$scope.barcodeId,ingredientsImageName).then(function(){console.log('finished - pic2');});
+                Products.addManualProduct(
+                  CloudinaryConfigs.image_url +'products/' + $scope.barcodeId + '/'+ productImageName + '.jpeg',
+                  CloudinaryConfigs.image_url +'products/' + $scope.barcodeId + '/'+ ingredientsImageName + '.jpeg',
+                  $scope.barcodeId,
+                  $rootScope.user);
+                  $state.go('tab.home');
               });
             }, 2500);
           }, function(err) {
