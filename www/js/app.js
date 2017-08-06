@@ -90,7 +90,7 @@ angular.module('starter',
       .state('tab.add-product', {
         url: '/addproduct/:productId',
         views: {
-          'tab-product-scan': {
+          'tab-home': {
             templateUrl: 'templates/add-product.html',
             controller: 'AddProductCtrl'
           }

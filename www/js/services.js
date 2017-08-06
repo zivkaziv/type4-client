@@ -196,7 +196,6 @@ angular.module('starter.services', [])
 
       return deferred.promise;
     };
-
   service.signup =function (user) {
       var deferred = $q.defer();
       $http.post(ApiEndpoint.url + 'signup', user)
@@ -214,7 +213,9 @@ angular.module('starter.services', [])
         });
       return deferred.promise;
     };
+  service.logout = function(){
 
+  };
   service.updateUser = function (user) {
       var deferred = $q.defer();
       var config = {

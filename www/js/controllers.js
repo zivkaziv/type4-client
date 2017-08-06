@@ -16,7 +16,7 @@ angular.module('starter.controllers', [])
       if(imageData.cancelled){
         $state.go('tab.home');
       }else {
-        $state.go('tab.product-details', {productId: imageData.text});
+        $state.go('tab.product-details-home', {productId: imageData.text});
       }
     }, function(error) {
       // console.log("An error happened -> " + error);
@@ -84,6 +84,7 @@ angular.module('starter.controllers', [])
            MixpanelService,
            $cordovaCamera,ImageUploadFactory,
            CloudinaryConfigs) {
+
     $scope.product = {};
     $scope.isNeedToConfrim = false;
     $scope.noProductFound = false;
@@ -109,8 +110,8 @@ angular.module('starter.controllers', [])
       updateReportButtonText();
     };
 
-    if(!$location.search().from_history) {
-      if(!foundProductInUserHistory()) {
+    if(!foundProductInUserHistory()) {
+      // if() {
         MixpanelService.track('product-details',{'reference':'scan','barcode' : $stateParams.productId});
         GoogleAnalyticsService.sendEvent('product-details','scan','barcode', $stateParams.productId);
         $scope.isLoading = true;
@@ -135,7 +136,10 @@ angular.module('starter.controllers', [])
             if (!$rootScope.user || !$rootScope.user.searches) {
               $rootScope.user.searches = [];
             }
-            $rootScope.user.searches.push(product);
+            //add to user history only if it's not exist
+            if(!isProductExistInUserSearch(product)) {
+              $rootScope.user.searches.push(product);
+            }
           } else {
             GoogleAnalyticsService.sendEvent('search-results', 'not-found', 'barcode', $stateParams.productId);
             MixpanelService.track('search-results', {'result': 'not-found', 'barcode': $stateParams.productId});
@@ -143,19 +147,20 @@ angular.module('starter.controllers', [])
             $state.go('tab.add-product', {productId: $stateParams.productId});
           }
         });
-      }
+      // }
     }else{
-      for(var searchIndex = 0; searchIndex < $rootScope.user.searches.length; searchIndex++){
-        if($rootScope.user.searches[searchIndex].barcode_id === $stateParams.productId) {
-          $scope.product = $rootScope.user.searches[searchIndex];
-          $scope.handleIsSafe();
-          $scope.isNeedToConfrim = false;
-          GoogleAnalyticsService.sendEvent('product-details','history','barcode', $stateParams.productId);
-          MixpanelService.track('product-details',{'reference':'history','barcode_id' : $stateParams.productId});
-
-          break;
-        }
-      }
+      // for(var searchIndex = 0; searchIndex < $rootScope.user.searches.length; searchIndex++){
+      //   if($rootScope.user.searches[searchIndex].barcode_id === $stateParams.productId) {
+      //     $scope.product = $rootScope.user.searches[searchIndex];
+      //     $scope.handleIsSafe();
+      //     $scope.isNeedToConfrim = false;
+          if($location.search().from_history) {
+            GoogleAnalyticsService.sendEvent('product-details', 'history', 'barcode', $stateParams.productId);
+            MixpanelService.track('product-details', {'reference': 'history', 'barcode_id': $stateParams.productId});
+          }
+          // break;
+        // }
+      // }
     }
 
     $scope.confirm = function(){
@@ -207,12 +212,21 @@ angular.module('starter.controllers', [])
 
     function foundProductInUserHistory(){
       for(var searchIndex = 0; searchIndex < $rootScope.user.searches.length; searchIndex++){
-        if($rootScope.user.searches[searchIndex].barcode_id === $stateParams.productId) {
+        if($rootScope.user.searches[searchIndex].barcode_id === $stateParams.productId && $rootScope.user.searches[searchIndex].ingredient_analysis.length > 0) {
           $scope.product = $rootScope.user.searches[searchIndex];
           $scope.handleIsSafe();
           $scope.isNeedToConfrim = false;
           GoogleAnalyticsService.sendEvent('product-details','already_scanned','barcode', $stateParams.productId);
           MixpanelService.track('product-details',{'reference':'already_scanned','barcode_id' : $stateParams.productId});
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function isProductExistInUserSearch(product){
+      for(var searchIndex = 0; searchIndex < $rootScope.user.searches.length; searchIndex++){
+        if($rootScope.user.searches[searchIndex].barcode_id === product.barcode_id) {
           return true;
         }
       }
@@ -273,7 +287,13 @@ angular.module('starter.controllers', [])
     AuthService.clearHistory($rootScope.user);
     $rootScope.user.searches = [];
     $scope.deleteHistoryText = 'Cleared';
+  };
+
+  $scope.logout = function(){
+    AuthService.logout();
+    $state.go('register');
   }
+
 })
 
 .controller('AllergiesCtrl', function($scope,$rootScope,AuthService,Allergies) {
