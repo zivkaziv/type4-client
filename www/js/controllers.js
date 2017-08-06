@@ -373,7 +373,7 @@ angular.module('starter.controllers', [])
   });
   $scope.user = {};
   $scope.isError = false;
-  $scope.errorMessage = 'We have a bug:( please contact info@typ4app.com';
+  $scope.errorMessage = 'We have a bug:( please contact info@typeiv.com';
 
   $scope.autoLogin = function(){
     if($localStorage.token && $localStorage.email){
