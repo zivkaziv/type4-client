@@ -108,6 +108,7 @@ angular.module('starter.controllers', [])
       }
 
       updateReportButtonText();
+      updateReactedButtonText();
     };
 
     if(!foundProductInUserHistory()) {
@@ -187,8 +188,9 @@ angular.module('starter.controllers', [])
 
     $scope.reportReacted = function(){
       MixpanelService.track('reacted-product',{'user_confirmation':'reject','barcode' : $stateParams.productId});
-      $scope.reactedText = 'Reported';
+      $scope.reactedText = 'Reported that you had reaction';
       Products.reportReaction($scope.product,$rootScope.user);
+      handleRactionProductForUser($scope.product,$rootScope.user);
     };
 
     $scope.toggleGroup = function() {
@@ -209,6 +211,17 @@ angular.module('starter.controllers', [])
       }
     }
   }
+
+    function updateReactedButtonText(){
+      if($rootScope.user.reactions){
+        for(var reactionProductIndex = 0; reactionProductIndex < $rootScope.user.reactions.length; reactionProductIndex++) {
+          if ($rootScope.user.reactions[reactionProductIndex]._id === $scope.product._id) {
+            $scope.reactedText = "You've reported this product";
+            break;
+          }
+        }
+      }
+    }
 
     function foundProductInUserHistory(){
       for(var searchIndex = 0; searchIndex < $rootScope.user.searches.length; searchIndex++){
@@ -231,6 +244,24 @@ angular.module('starter.controllers', [])
         }
       }
       return false;
+    }
+
+    function handleRactionProductForUser(product,user){
+      if(user.reactions){
+        user.reactions = [];
+      }
+
+      var isExist = false;
+      for(var i = 0; i < user.reactions.lenght; i++){
+        if(user.reactions[i]._id === product._id){
+          isExist = true;
+          break;
+        }
+      }
+
+      if(!isExist){
+        user.reactions.push(product);
+      }
     }
 
     $scope.addProduct = function(){
