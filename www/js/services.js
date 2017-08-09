@@ -60,7 +60,8 @@ angular.module('starter.services', [])
     headers: {
       "Authorization": 'Bearer ' + $rootScope.token,
       "Content-Type": 'application/json'
-    }};
+    }
+  };
 
   return {
     get: function(barcodeId) {
@@ -214,7 +215,8 @@ angular.module('starter.services', [])
       return deferred.promise;
     };
   service.logout = function(){
-
+    delete $localStorage.token;
+    delete $localStorage.email;
   };
   service.updateUser = function (user) {
       var deferred = $q.defer();

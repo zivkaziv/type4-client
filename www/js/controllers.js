@@ -147,6 +147,12 @@ angular.module('starter.controllers', [])
             $scope.noProductFound = true;
             $state.go('tab.add-product', {productId: $stateParams.productId});
           }
+        },function(err){
+          console.log(err);
+          GoogleAnalyticsService.sendEvent('search-results', 'timeout', 'barcode', $stateParams.productId);
+          MixpanelService.track('search-results', {'result': 'timeout', 'barcode': $stateParams.productId});
+          $scope.noProductFound = true;
+          $state.go('tab.add-product', {productId: $stateParams.productId});
         });
       // }
     }else{
@@ -322,7 +328,7 @@ angular.module('starter.controllers', [])
 
   $scope.logout = function(){
     AuthService.logout();
-    $state.go('register');
+    $state.go('login');
   }
 
 })
@@ -429,36 +435,46 @@ angular.module('starter.controllers', [])
 
 .controller('registerCtrl',
   function($scope,AuthService,$state,$ionicLoading,MixpanelService) {
-  $scope.user= {};
-  $scope.isError = false;
-  $scope.errorMessage = '';
-  $scope.signup = function(){
-    $scope.isError = false;
-    $ionicLoading.show();
-    AuthService.signup($scope.user)
-      .then(function(response) {
-        console.log(response);
-        $ionicLoading.hide();
-        MixpanelService.track('signup',{'email' : $scope.user.email});
-        $state.go('tab.allergies');
-      },function(err){
-        $ionicLoading.hide();
-        console.log(err);
-        if(Array.isArray(err.data)){
-          $scope.errorMessage = err.data[0].msg;
-        }else{
-          $scope.errorMessage = err.data.msg;
-        }
-        $scope.isError = true;
-      });
+  $scope.user= {
+    gender:'female'
   };
-  $scope.isDisabled = true;
-  // style strength
-  $scope.passwordStrength = {
-    "float": "left",
-    "width": "100%",
-    "height": "25px",
-    "margin-left": "5px"
+
+    $scope.$watch('user',function(change){
+      console.log(change);
+      $scope.isDisabled = $scope.validateForm();
+    },true);
+
+    $scope.isError = false;
+    $scope.errorMessage = '';
+    $scope.signup = function(){
+      $scope.isError = false;
+      $ionicLoading.show();
+      AuthService.signup($scope.user)
+        .then(function(response) {
+          console.log(response);
+          $ionicLoading.hide();
+          MixpanelService.track('signup',{'email' : $scope.user.email});
+          $state.go('tab.allergies');
+        },function(err){
+          $ionicLoading.hide();
+          console.log(err);
+          if(Array.isArray(err.data)){
+            $scope.errorMessage = err.data[0].msg;
+          }else{
+            $scope.errorMessage = err.data.msg;
+          }
+          $scope.isError = true;
+        });
+    };
+
+    $scope.isDisabled = true;
+    $scope.isPasswordGood = false;
+    // style strength
+    $scope.passwordStrength = {
+      "float": "left",
+      "width": "100%",
+      "height": "25px",
+      "margin-left": "5px"
   };
 
   var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
@@ -471,16 +487,27 @@ angular.module('starter.controllers', [])
     }else if(strongRegex.test(value)){
       $scope.passwordStrength["background-color"] = "green";
       $scope.passwordQuality = 'ion-thumbsup balanced';
-      $scope.isDisabled = false;
+      $scope.isPasswordGood = true;
     }else if(mediumRegex.test(value)) {
       $scope.passwordStrength["background-color"] = "orange";
       $scope.passwordQuality = 'ion-thumbsup balanced';
-      $scope.isDisabled = false;
+      $scope.isPasswordGood = true;
     }else{
       $scope.passwordStrength["background-color"] = "red";
       $scope.passwordQuality = 'ion-thumbsdown assertive';
     }
   };
+
+  $scope.validateForm = function(){
+    if($scope.user.email &&
+      $scope.user.dob &&
+      $scope.user.name &&
+      $scope.isPasswordGood &&
+      $scope.user.email.indexOf('@') > -1){
+      return false
+    }
+    return true;
+  }
 })
 
 .controller('AddProductCtrl',

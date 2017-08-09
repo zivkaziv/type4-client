@@ -14,6 +14,19 @@
           <span class="input-label">Date of birth</span>
           <input type="date" placeholder="" name="dob"  ng-model="user.dob">
         </label>
+        <label class="item item-input" radio-group>
+          <span class="input-label">Gender</span>
+          <ion-radio ng-value="'male'"
+                     ng-model="user.gender" style="width:33.5%;white-space: nowrap; overflow: visible;text-align: center">
+           <span>M</span>
+            <!--<i style="margin-left: 15px" class="icon ion-man"></i>-->
+          </ion-radio>
+          <ion-radio ng-value="'female'"
+                     ng-model="user.gender" style="width:33.5%;white-space: nowrap; overflow: visible;text-align: center">
+            <span>F</span>
+            <!--<i style="margin-left: 15px" class="icon ion-woman"></i>-->
+          </ion-radio>
+        </label>
         <label class="item item-input">
           <span class="input-label">Password</span>
           <input ng-change="analyze(user.password)" type="password" placeholder="" name="password" ng-model="user.password">
