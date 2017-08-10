@@ -1,6 +1,6 @@
 <ion-view view-title="Allergies" id="allergies-view" id="allergies-view">
   <div class="bar bar-subheader has-tabs-top" >
-    <div style="width: 100%"
+    <div id="allergy-searchbar" style="width: 100%"
          angucomplete-alt id="ex1"
          placeholder="Search allergies"
          maxlength="50"
@@ -59,4 +59,17 @@
       </ion-item>
     </ion-list>
   </ion-content>
+
+  <walkthrough
+    wid="Demo2"
+    walkthrough-type="transparency"
+    focus-element-selector="#allergy-searchbar"
+    icon="single_tap"
+    main-caption="Fill your skin allergies according to your Doctor's diagnosis. Just start typing and we'll auto complete it"
+    icon-padding-left="40"
+    icon-padding-top="5"
+    is-active="shouldShowWalkThrough"
+    use-button="false"
+    has-backdrop="true">
+  </walkthrough>
 </ion-view>

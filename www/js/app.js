@@ -13,7 +13,8 @@ angular.module('starter',
     'ngStorage',
     'ionic-zoom-view',
     'angucomplete-alt',
-    'ionic.cloud'
+    'ionic.cloud',
+    'ng-walkthrough'
   ])
 
   .constant('ApiEndpoint', {

@@ -336,9 +336,17 @@ angular.module('starter.controllers', [])
 .controller('AllergiesCtrl', function($scope,$rootScope,AuthService,Allergies) {
     var needToSave = false;
     $scope.showDelete = false;
+    $scope.shouldShowWalkThrough = false;
     Allergies.get().then(function(allergies){
        $scope.allergies  =allergies;
     });
+
+    setTimeout(function(){
+      if($rootScope.isNewUser && $rootScope.user.allergies.length === 0) {
+        $scope.shouldShowWalkThrough = true;
+      }
+      $rootScope.isNewUser = false;
+    },300);
 
     $scope.addSelectedItemFromRemoteAutocomplete = function(item) {
       if (item && item.originalObject) {
@@ -434,7 +442,7 @@ angular.module('starter.controllers', [])
 })
 
 .controller('registerCtrl',
-  function($scope,AuthService,$state,$ionicLoading,MixpanelService) {
+  function($scope,AuthService,$state,$ionicLoading,MixpanelService,$rootScope) {
   $scope.user= {
     gender:'female'
   };
@@ -454,6 +462,7 @@ angular.module('starter.controllers', [])
           console.log(response);
           $ionicLoading.hide();
           MixpanelService.track('signup',{'email' : $scope.user.email});
+          $rootScope.isNewUser = true;
           $state.go('tab.allergies');
         },function(err){
           $ionicLoading.hide();
