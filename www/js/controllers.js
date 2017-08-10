@@ -2,6 +2,7 @@ angular.module('starter.controllers', [])
 
 .controller('HomeCtrl', function($scope,
                                  $state,
+                                 $rootScope,
                                  $cordovaBarcodeScanner,
                                  GoogleAnalyticsService,
                                  MixpanelService) {
@@ -12,17 +13,43 @@ angular.module('starter.controllers', [])
   $scope.scanBarcode = function() {
     MixpanelService.track('home-button-clicked',{'button name' : 'scan'});
     GoogleAnalyticsService.sendEvent('home-buttons','scan','scan','click');
-    $cordovaBarcodeScanner.scan().then(function(imageData) {
-      if(imageData.cancelled){
-        $state.go('tab.home');
-      }else {
-        $state.go('tab.product-details-home', {productId: imageData.text});
-      }
-    }, function(error) {
-      // console.log("An error happened -> " + error);
-      // alert('unable to read barcode.. Try again');
-    });
+    try {
+      $cordovaBarcodeScanner.scan().then(function (imageData) {
+        if (imageData.cancelled) {
+          $state.go('tab.home');
+        } else {
+          $state.go('tab.product-details-home', {productId: imageData.text});
+        }
+      }, function (error) {
+        // console.log("An error happened -> " + error);
+        // alert('unable to read barcode.. Try again');
+      });
+    }catch (err){
+      // console.log(err);
+      // $scope.dummyScan();
+    }
   };
+
+  $scope.dummyScan = function(){
+    //Working product
+    // $state.go('tab.product-details',{productId: 37000274018});
+
+    //Not found product
+    // $state.go('tab.product-details',{productId: 1234});
+
+    //No ingredients
+    // $state.go('tab.product-details',{productId: 8717163023839});
+    // $state.go('tab.product-details-home',{productId: 0037000143104});
+    $state.go('tab.product-details-home',{productId: 0037000143109});
+  };
+
+  $scope.shouldShowHomeWalkThrough = false;
+  setTimeout(function(){
+    if($rootScope.isFirstTimeInHomeTab) {
+      $scope.shouldShowHomeWalkThrough = true;
+    }
+    $rootScope.isFirstTimeInHomeTab = false;
+  },100);
 
   $scope.$on('cloud:push:notification', function(event, data) {
     try {
@@ -189,7 +216,7 @@ angular.module('starter.controllers', [])
       if(!$scope.product.reported_users){
         $scope.product.reported_users = [];
       }
-      $scope.product.reported_users.push($rootScope.user);
+      $scope.product.reported_users.push({'email':$rootScope.user.email});
     };
 
     $scope.reportReacted = function(){
@@ -342,10 +369,10 @@ angular.module('starter.controllers', [])
     });
 
     setTimeout(function(){
-      if($rootScope.isNewUser && $rootScope.user.allergies.length === 0) {
+      if($rootScope.isFirstTimeInAllergiesTab && $rootScope.user.allergies.length === 0) {
         $scope.shouldShowWalkThrough = true;
       }
-      $rootScope.isNewUser = false;
+      $rootScope.isFirstTimeInAllergiesTab = false;
     },300);
 
     $scope.addSelectedItemFromRemoteAutocomplete = function(item) {
@@ -462,7 +489,8 @@ angular.module('starter.controllers', [])
           console.log(response);
           $ionicLoading.hide();
           MixpanelService.track('signup',{'email' : $scope.user.email});
-          $rootScope.isNewUser = true;
+          $rootScope.isFirstTimeInAllergiesTab = true;
+          $rootScope.isFirstTimeInHomeTab = true;
           $state.go('tab.allergies');
         },function(err){
           $ionicLoading.hide();

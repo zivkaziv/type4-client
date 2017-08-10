@@ -9,9 +9,9 @@
         <button class="button button-positive" ng-click="addProduct()" style="min-width: 80px;">Help us</button>
       </div>
       <div ng-if="!isNeedToConfrim && !noProductFound" class="product-details-container">
-        <div class="product-metadata-container">
-          <div class="product-image-container" style="min-width: 40%; text-align: center">
-            <img err-src='/img/no_image.png' ng-src="{{product.image_url}}" zoom-src="{{product.image_url}}" zoom-view style="max-height: 150px">
+        <div class="product-metadata-container" style="min-height: 150px">
+          <div class="product-image-container" style="min-width: 50%; text-align: center">
+            <img err-src='/img/no_image.png' ng-src="{{product.image_url}}" zoom-src="{{product.image_url}}" zoom-view style="max-height: 150px;max-width: 150px">
             <ANY ng-switch="product.analysis_result">
               <ANY ng-switch-when="SAFE"><img ng-src="img/safe_mark.png" style="max-height: 120px;position: absolute;left: 7%;top:10px"/></ANY>
               <ANY ng-switch-when="NOT_SAFE"><img ng-src="img/not_safe_mark.png" style="max-height: 120px;position: absolute;left: 10%;top:10px"/></ANY>

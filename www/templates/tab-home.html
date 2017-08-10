@@ -1,13 +1,13 @@
 <ion-view view-title="Home" id="home-view">
 
   <ion-content class="padding" content scroll="false">
-    <div
+    <div id="scan-barcode-container"
       style="
       display: flex;
       flex-direction: column;
       align-items: center;
       margin-bottom: 3%">
-      <img ng-click="scanBarcode()" ng-src="img/scan_img.png" height="170" width="170"/>
+      <img id="scan-barcode-button" ng-click="scanBarcode()" ng-src="img/scan_img.png" height="170" width="170"/>
       <div style="margin-top:10px">Press the barcode to start scanning </div>
     </div>
     <div class="item item-divider">
@@ -18,7 +18,6 @@
       flex-direction: column;
       align-items: center;
       height: 100%;">
-
       <div class="list last-products-container">
         <ion-content>
           <a ng-if="search.name && search.image_url" class="item item-thumbnail-left" ng-repeat="search in user.searches | orderBy:'-'"
@@ -31,4 +30,17 @@
         <div></div>
       </div>
     </div>
+    <walkthrough
+      style="height: 100px; width: 100%;"
+      wid="Demo3"
+      walkthrough-type="transparency"
+      focus-element-selector="#scan-barcode-container"
+      icon="double_tap"
+      main-caption="Tap here in order to start scanning barcodes"
+      icon-padding-left="10"
+      icon-padding-top="10"
+      is-active="shouldShowHomeWalkThrough"
+      use-button="false"
+      has-backdrop="true">
+    </walkthrough>
 </ion-view>
