@@ -18,8 +18,8 @@ angular.module('starter',
   ])
 
   .constant('ApiEndpoint', {
-    // url: 'https://typeiv.herokuapp.com/'
-    url: 'http://localhost:8000/'
+    url: 'https://typeiv.herokuapp.com/'
+    // url: 'http://localhost:8000/'
   })
 
   .config(function($stateProvider, $urlRouterProvider) {
