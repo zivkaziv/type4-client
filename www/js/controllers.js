@@ -21,11 +21,11 @@ angular.module('starter.controllers', [])
           $state.go('tab.product-details-home', {productId: imageData.text});
         }
       }, function (error) {
-        // console.log("An error happened -> " + error);
+        console.log("An error happened -> " + error);
         // alert('unable to read barcode.. Try again');
       });
     }catch (err){
-      // console.log(err);
+      console.log(err);
       // $scope.dummyScan();
     }
   };
@@ -40,7 +40,7 @@ angular.module('starter.controllers', [])
     //No ingredients
     // $state.go('tab.product-details',{productId: 8717163023839});
     // $state.go('tab.product-details-home',{productId: 0037000143104});
-    $state.go('tab.product-details-home',{productId: 0037000143109});
+    $state.go('tab.product-details-home',{productId: 0072140002541});
   };
 
   $scope.shouldShowHomeWalkThrough = false;
@@ -112,7 +112,61 @@ angular.module('starter.controllers', [])
            $cordovaCamera,ImageUploadFactory,
            CloudinaryConfigs) {
 
-    $scope.product = {};
+    $scope.loadProduct = function(isNeedConfirm,isReload) {
+      return Products.get($stateParams.productId).then(function (product) {
+        $scope.isLoading = false;
+        $scope.product = product;
+        if (product.name) {
+          $scope.handleIsSafe();
+          $scope.isNeedToConfrim = $scope.product.ingredient_analysis.length === 0 || !isNeedConfirm? false : true;
+          GoogleAnalyticsService.sendEvent('search-results', 'found', 'barcode', $stateParams.productId);
+          var eventName = 'found';
+          if ($scope.product.ingredient_analysis.length == 0) {
+            eventName = 'found-no-ingredient'
+          }
+          MixpanelService.track('search-results', {
+            'result': eventName,
+            'barcode': $stateParams.productId,
+            'num_of_ingredients': $scope.product.ingredient_analysis.length,
+            'analysis_result': $scope.product.analysis_result
+          });
+          // console.log(product);
+          if (!$rootScope.user || !$rootScope.user.searches) {
+            $rootScope.user.searches = [];
+          }
+          if(isReload){
+            //Update product in search
+            for(var searchIndex = 0; searchIndex < $rootScope.user.searches.length; searchIndex++){
+              if($rootScope.user.searches[searchIndex].barcode_id === $scope.product.barcode_id) {
+                $rootScope.user.searches[searchIndex] = $scope.product;
+              }
+            }
+          }else{
+            //add to user history only if it's not exist
+            if(!isProductExistInUserSearch(product)) {
+              $rootScope.user.searches.push(product);
+            }
+          }
+
+        } else {
+          GoogleAnalyticsService.sendEvent('search-results', 'not-found', 'barcode', $stateParams.productId);
+          MixpanelService.track('search-results', {'result': 'not-found', 'barcode': $stateParams.productId});
+          $scope.noProductFound = true;
+          $state.go('tab.add-product', {productId: $stateParams.productId});
+        }
+      },function(err){
+        console.log(err);
+        GoogleAnalyticsService.sendEvent('search-results', 'timeout', 'barcode', $stateParams.productId);
+        MixpanelService.track('search-results', {'result': 'timeout', 'barcode': $stateParams.productId});
+        $scope.noProductFound = true;
+        $state.go('tab.add-product', {productId: $stateParams.productId});
+      });
+    };
+
+    $scope.product = {
+      barcode_id:''
+    };
+
     $scope.isNeedToConfrim = false;
     $scope.noProductFound = false;
     $scope.reportProductText = 'Report a problem';
@@ -138,63 +192,15 @@ angular.module('starter.controllers', [])
       updateReactedButtonText();
     };
 
+
     if(!foundProductInUserHistory()) {
-      // if() {
-        MixpanelService.track('product-details',{'reference':'scan','barcode' : $stateParams.productId});
-        GoogleAnalyticsService.sendEvent('product-details','scan','barcode', $stateParams.productId);
-        $scope.isLoading = true;
-        Products.get($stateParams.productId).then(function (product) {
-          $scope.isLoading = false;
-          $scope.product = product;
-          if (product.name) {
-            $scope.handleIsSafe();
-            $scope.isNeedToConfrim = $scope.product.ingredient_analysis.length === 0 ? false : true;
-            GoogleAnalyticsService.sendEvent('search-results', 'found', 'barcode', $stateParams.productId);
-            var eventName = 'found';
-            if ($scope.product.ingredient_analysis.length == 0) {
-              eventName = 'found-no-ingredient'
-            }
-            MixpanelService.track('search-results', {
-              'result': eventName,
-              'barcode': $stateParams.productId,
-              'num_of_ingredients': $scope.product.ingredient_analysis.length,
-              'analysis_result': $scope.product.analysis_result
-            });
-            // console.log(product);
-            if (!$rootScope.user || !$rootScope.user.searches) {
-              $rootScope.user.searches = [];
-            }
-            //add to user history only if it's not exist
-            if(!isProductExistInUserSearch(product)) {
-              $rootScope.user.searches.push(product);
-            }
-          } else {
-            GoogleAnalyticsService.sendEvent('search-results', 'not-found', 'barcode', $stateParams.productId);
-            MixpanelService.track('search-results', {'result': 'not-found', 'barcode': $stateParams.productId});
-            $scope.noProductFound = true;
-            $state.go('tab.add-product', {productId: $stateParams.productId});
-          }
-        },function(err){
-          console.log(err);
-          GoogleAnalyticsService.sendEvent('search-results', 'timeout', 'barcode', $stateParams.productId);
-          MixpanelService.track('search-results', {'result': 'timeout', 'barcode': $stateParams.productId});
-          $scope.noProductFound = true;
-          $state.go('tab.add-product', {productId: $stateParams.productId});
-        });
-      // }
+      $scope.isLoading = true;
+      $scope.loadProduct(true,false);
     }else{
-      // for(var searchIndex = 0; searchIndex < $rootScope.user.searches.length; searchIndex++){
-      //   if($rootScope.user.searches[searchIndex].barcode_id === $stateParams.productId) {
-      //     $scope.product = $rootScope.user.searches[searchIndex];
-      //     $scope.handleIsSafe();
-      //     $scope.isNeedToConfrim = false;
-          if($location.search().from_history) {
-            GoogleAnalyticsService.sendEvent('product-details', 'history', 'barcode', $stateParams.productId);
-            MixpanelService.track('product-details', {'reference': 'history', 'barcode_id': $stateParams.productId});
-          }
-          // break;
-        // }
-      // }
+      if($location.search().from_history) {
+        GoogleAnalyticsService.sendEvent('product-details', 'history', 'barcode', $stateParams.productId);
+        MixpanelService.track('product-details', {'reference': 'history', 'barcode_id': $stateParams.productId});
+      }
     }
 
     $scope.confirm = function(){

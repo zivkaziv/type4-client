@@ -1,5 +1,10 @@
 <ion-view view-title="Details">
   <ion-content class="padding" id="product-details-content">
+    <ion-refresher
+      pulling-text="Refreshing"
+      on-refresh="loadProduct(false,true)">
+    </ion-refresher>
+
     <div ng-show="isLoading" class="spinner-container" style="height: 100%">
       <ion-spinner  icon="lines"></ion-spinner>
     </div>
