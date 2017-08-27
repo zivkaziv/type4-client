@@ -27,11 +27,12 @@
         </div>
         <div class="product-analysis-container" style="text-align: center">
           <ANY ng-switch="product.analysis_result">
-            <ANY ng-switch-when="SAFE"><img ng-src="img/safe_v2.png" style="max-height: 90px;"/></ANY>
-            <ANY ng-switch-when="NOT_SAFE"><img ng-src="img/not_safe_v2.png" style="max-height: 90px;"/></ANY>
-            <ANY ng-switch-default ng-src="img/unknown_v2.png" style="max-height: 90px;"></ANY>
+            <ANY ng-switch-when="SAFE"><img ng-src="img/safe_v2.png" style="max-height: 90px;"/><div>It's <b>safe</b> for you</div></ANY>
+            <ANY ng-switch-when="NOT_SAFE"><img ng-src="img/not_safe_v2.png" style="max-height: 90px;"/><div>It's <b>unsafe</b> for you</div></ANY>
+            <ANY ng-switch-default ng-src="img/unknown_v2.png" style="max-height: 90px;"><div>We can't say</div></ANY>
           </ANY>
         </div>
+        <!--Buttons-->
         <div style="display: flex; flex-direction: column">
           <button class="button button-outline button-assertive" ng-click="reportReacted()" style="min-width: 80px;margin-top: 15px;margin-bottom: 5px;">{{reactedText}}</button>
           <button class="button button-outline button-assertive" ng-click="reportProblematicProduct()" style="min-width: 80px;margin-top: 5px;margin-bottom: 5px;">{{reportProductText}}</button>
@@ -63,6 +64,7 @@
             </ion-item>
           </ion-list>
           <br/>
+          <!--Legal-->
           <div>
             <b>Legal Disclaimer</b> - Actual product packaging and materials may contain more and different product and ingredient information than what is shown on our website. We recommend that you do not rely solely on the information presented and that you always read labels, warnings, and directions before using or consuming a product.
           </div>
