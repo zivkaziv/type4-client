@@ -64,7 +64,7 @@ angular.module('starter',
         url: '/home/product/:productId',
         views: {
           'tab-home': {
-            templateUrl: 'templates/product-details.html',
+            templateUrl: 'templates/product-details-v2.html',
             controller: 'ProductDetailCtrl'
           }
         }
@@ -84,7 +84,7 @@ angular.module('starter',
         url: '/product/:productId',
         views: {
           'tab-product-scan': {
-            templateUrl: 'templates/product-details.html',
+            templateUrl: 'templates/product-details-v2.html',
             controller: 'ProductDetailCtrl'
           }
         }

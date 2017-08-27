@@ -1,0 +1,99 @@
+<ion-view view-title="Details">
+  <ion-content class="padding" id="product-details-content">
+    <ion-refresher
+      pulling-text="Refreshing"
+      on-refresh="loadProduct(false,true)">
+    </ion-refresher>
+
+    <div ng-show="isLoading" class="spinner-container" style="height: 100%">
+      <ion-spinner  icon="lines"></ion-spinner>
+    </div>
+    <div ng-show="!isLoading" class="product-container">
+      <div ng-show="noProductFound" class="no-product-found">
+        Help us to add this product<br/><br/><br/><b>{{product.barcode_id}}</b><br/><br/>
+        <button class="button button-positive" ng-click="addProduct()" style="min-width: 80px;">Help us</button>
+      </div>
+      <div ng-if="!isNeedToConfrim && !noProductFound" class="product-details-container-v2">
+        <div class="product-image-container" style="min-width: 50%; text-align: center; margin-top: 5%">
+          <img err-src='/img/no_image.png'
+               ng-src="{{product.image_url}}"
+               zoom-src="{{product.image_url}}"
+               zoom-view
+               style="max-height: 150px;max-width: 150px">
+        </div>
+        <div class="metadata-item-container" style="font-size: 20px;text-align: center;margin: 5% 10%;">
+          <div>{{product.name}}</div>
+          <div ng-if="product.category"><b>Category: </b>{{product.category}}</div>
+        </div>
+        <div class="product-analysis-container" style="text-align: center">
+          <ANY ng-switch="product.analysis_result">
+            <ANY ng-switch-when="SAFE"><img ng-src="img/safe_v2.png" style="max-height: 90px;"/></ANY>
+            <ANY ng-switch-when="NOT_SAFE"><img ng-src="img/not_safe_v2.png" style="max-height: 90px;"/></ANY>
+            <ANY ng-switch-default ng-src="img/unknown_v2.png" style="max-height: 90px;"></ANY>
+          </ANY>
+        </div>
+        <div style="display: flex; flex-direction: column">
+          <button class="button button-outline button-assertive" ng-click="reportReacted()" style="min-width: 80px;margin-top: 15px;margin-bottom: 5px;">{{reactedText}}</button>
+          <button class="button button-outline button-assertive" ng-click="reportProblematicProduct()" style="min-width: 80px;margin-top: 5px;margin-bottom: 5px;">{{reportProductText}}</button>
+        </div>
+        <div ng-if="product.ingredient_analysis.length > 0" class="ingredients-container">
+          <!--<div><b style="font-size: 20px;margin-top: 15px">Ingredients:</b></div>-->
+          <!--<div class="ingredients" style="margin-top: 15px">-->
+          <!--<div class="ingredient-item"-->
+          <!--ng-class="ingredient.analysis == 'NOT_SENSITIVE' ? 'safe-ingredient' : (ingredient.analysis == 'SENSITIVE' ? 'not-safe-ingredient' : 'unknown-ingredient')"-->
+          <!--ng-repeat="ingredient in product.ingredient_analysis | orderBy : '-analysis'">-->
+          <!--{{ingredient.name}}-->
+          <!--</div>-->
+          <!--</div>-->
+          <ion-list>
+            <!--Header-->
+            <ion-item class="item-stable"
+                      ng-click="toggleGroup()"
+                      ng-class="{active: isGroupShown()}">
+              <i class="icon" ng-class="isGroupShown() ? 'ion-minus' : 'ion-plus'"></i>
+              &nbsp;
+              Ingredients
+            </ion-item>
+            <!--Items-->
+            <ion-item class="item-accordion"
+                      ng-class="ingredient.analysis == 'NOT_SENSITIVE' ? 'safe-ingredient' : (ingredient.analysis == 'SENSITIVE' ? 'not-safe-ingredient' : 'unknown-ingredient')"
+                      ng-repeat="ingredient in product.ingredient_analysis | orderBy : '-analysis'"
+                      ng-show="isGroupShown()">
+              {{ingredient.name}}
+            </ion-item>
+          </ion-list>
+          <br/>
+          <div>
+            <b>Legal Disclaimer</b> - Actual product packaging and materials may contain more and different product and ingredient information than what is shown on our website. We recommend that you do not rely solely on the information presented and that you always read labels, warnings, and directions before using or consuming a product.
+          </div>
+        </div>
+        <div ng-if="product.ingredient_analysis.length === 0" class="ingredients-container"
+             style="text-align: center;
+              font-size: 18px;
+              margin-top: 10%;
+              line-height: 18px;">
+          <div>Ohh.. the <b>bad</b> news are that we didn't find the product ingredients</div>
+          <br/>
+          <div>But the <b>good</b> news are that you can help the community with it</div>
+          <br/>
+          <div>Just take one picture of the ingredients part</div>
+          <button class="button button-positive" ng-click="takeIngredientPic()" style="min-width: 80px; margin-top: 20px;">Take a picture</button>
+        </div>
+      </div>
+      <div ng-if="isNeedToConfrim && !noProductFound" class="product-confirm-container">
+        <h4>{{product.name}}</h4>
+        <div class="image-container" style="display: inline-flex" zoom-src="{{product.image_url}}" zoom-view>
+          <img err-src='/img/no_image.png' ng-src="{{product.image_url}}" style="max-height: 120px">
+          <div class="icon ion-ios-search-strong"></div>
+        </div>
+        <div class="question-container">
+          <div>Is it the product?</div>
+        </div>
+        <div class="confirm-reject-button">
+          <button class="button button-assertive" ng-click="reject()" style="min-width: 80px;">Reject</button>
+          <button class="button button-positive" ng-click="confirm()" style="min-width: 80px;">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
