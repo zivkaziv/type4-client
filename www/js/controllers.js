@@ -475,7 +475,7 @@ angular.module('starter.controllers', [])
 })
 
 .controller('registerCtrl',
-  function($scope,AuthService,$state,$ionicLoading,MixpanelService,$rootScope) {
+  function($scope,AuthService,$state,$ionicLoading,MixpanelService,$rootScope,$localStorage) {
   $scope.user= {
     gender:'female'
   };
@@ -486,7 +486,7 @@ angular.module('starter.controllers', [])
     },true);
 
     $scope.isError = false;
-    $scope.errorMessage = '';
+    $scope.errorMessage = 'We have a bug:( please contact info@TypeIV.com';
     $scope.signup = function(){
       $scope.isError = false;
       $ionicLoading.show();
@@ -551,6 +551,32 @@ angular.module('starter.controllers', [])
     }
     return true;
   }
+
+  //Auto login
+  $scope.autoLogin = function(){
+      if($localStorage.token && $localStorage.email){
+        $scope.user.email = $localStorage.email;
+        $scope.user.password = 'myPassword123!';
+        $ionicLoading.show();
+        AuthService.loginByToken($localStorage.token)
+          .then(function(response){
+            MixpanelService.track('login',{'login-type':'auto-login','email' : $scope.user.email});
+            console.log(response);
+            // $state.go('tab.account');
+            $state.go('tab.home');
+            $ionicLoading.hide();
+            try{
+              GoogleAnalyticsService.registerUser();
+            }catch(err){
+              console.log(err);
+            }
+          },function(err){
+            $ionicLoading.hide();
+          });
+
+      }
+    };
+  $scope.autoLogin();
 })
 
 .controller('AddProductCtrl',

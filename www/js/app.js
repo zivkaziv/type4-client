@@ -44,6 +44,12 @@ angular.module('starter',
         controller: 'loginCtrl'
       })
 
+      .state('login-v2', {
+        url: '/login2',
+        templateUrl: 'templates/login-v2.html',
+        controller: 'registerCtrl'
+      })
+
       .state('register', {
         url: '/register',
         templateUrl: 'templates/register.html',
@@ -131,7 +137,7 @@ angular.module('starter',
       });
 
     // if none of the above states are matched, use this as the fallback
-    $urlRouterProvider.otherwise('/login');
+    $urlRouterProvider.otherwise('/login2');
   })
 
   .config(function($ionicCloudProvider) {
