@@ -476,9 +476,13 @@ angular.module('starter.controllers', [])
 
 .controller('registerCtrl',
   function($scope,AuthService,$state,$ionicLoading,MixpanelService,$rootScope,$localStorage) {
-  $scope.user= {
-    gender:'female'
-  };
+    var date = new Date();
+    date.setYear(1991);
+    date.setMonth(01,01);
+    $scope.user= {
+      gender:'female',
+      dob:date
+    };
 
     $scope.$watch('user',function(change){
       console.log(change);
