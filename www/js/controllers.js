@@ -65,6 +65,30 @@ angular.module('starter.controllers', [])
     var msg = data.message;
     alert(msg.title + ': ' + msg.text);
   });
+
+  if(push) {
+    push.on('notification', function (data) {
+      // do something with the push data
+      try {
+        var eventData = {
+          'message': data.message
+        };
+        eventData.ab_test = data.ab_test ? data.ab_test : 'NA';
+        eventData.msg_type = data.msg_type ? data.msg_type : 'NA';
+        MixpanelService.track('push-message-received', {});
+      }catch (err){
+        console.log(err);
+      }
+      var msg = data.message;
+      alert(msg.title + ': ' + msg.text);
+      // then call finish to let the OS know we are done
+      push.finish(function () {
+        console.log("processing of push data is finished");
+      }, function () {
+        console.log("something went wrong with push.finish for ID = " + data.additionalData.notId)
+      }, data.additionalData.notId);
+    });
+  }
 })
 
 .controller('ScanProductCtrl', function($scope,$cordovaBarcodeScanner,Products,$state,GoogleAnalyticsService,MixpanelService) {
