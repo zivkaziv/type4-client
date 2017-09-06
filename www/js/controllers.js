@@ -10,23 +10,33 @@ angular.module('starter.controllers', [])
     GoogleAnalyticsService.sendEvent('menu-buttons', 'home', 'home', 'click');
     MixpanelService.track('menu-button-clicked',{'button name' : 'home'});
   });
+
+  $scope.currentlyScanning = false;
+
   $scope.scanBarcode = function() {
-    MixpanelService.track('home-button-clicked',{'button name' : 'scan'});
-    GoogleAnalyticsService.sendEvent('home-buttons','scan','scan','click');
-    try {
-      $cordovaBarcodeScanner.scan().then(function (imageData) {
-        if (imageData.cancelled) {
-          $state.go('tab.home');
-        } else {
-          $state.go('tab.product-details-home', {productId: imageData.text});
-        }
-      }, function (error) {
-        console.log("An error happened -> " + error);
-        // alert('unable to read barcode.. Try again');
-      });
-    }catch (err){
-      console.log(err);
-      // $scope.dummyScan();
+    if(!$scope.currentlyScanning) {
+      $scope.currentlyScanning = true;
+      MixpanelService.track('home-button-clicked', {'button name': 'scan'});
+      GoogleAnalyticsService.sendEvent('home-buttons', 'scan', 'scan', 'click');
+      try {
+        $cordovaBarcodeScanner.scan().then(function (imageData) {
+          if (imageData.cancelled) {
+            $scope.currentlyScanning = false;
+            $state.go('tab.home');
+          } else {
+            $scope.currentlyScanning = false
+            $state.go('tab.product-details-home', {productId: imageData.text});
+          }
+        }, function (error) {
+          $scope.currentlyScanning = false
+          console.log("An error happened -> " + error);
+          // alert('unable to read barcode.. Try again');
+        });
+      } catch (err) {
+        $scope.currentlyScanning = false
+        console.log(err);
+        // $scope.dummyScan();
+      }
     }
   };
 
@@ -66,29 +76,29 @@ angular.module('starter.controllers', [])
     alert(msg.title + ': ' + msg.text);
   });
 
-  if(push) {
-    push.on('notification', function (data) {
-      // do something with the push data
-      try {
-        var eventData = {
-          'message': data.message
-        };
-        eventData.ab_test = data.ab_test ? data.ab_test : 'NA';
-        eventData.msg_type = data.msg_type ? data.msg_type : 'NA';
-        MixpanelService.track('push-message-received', {});
-      }catch (err){
-        console.log(err);
-      }
-      var msg = data.message;
-      alert(msg.title + ': ' + msg.text);
-      // then call finish to let the OS know we are done
-      push.finish(function () {
-        console.log("processing of push data is finished");
-      }, function () {
-        console.log("something went wrong with push.finish for ID = " + data.additionalData.notId)
-      }, data.additionalData.notId);
-    });
-  }
+  // if(push) {
+  //   push.on('notification', function (data) {
+  //     // do something with the push data
+  //     try {
+  //       var eventData = {
+  //         'message': data.message
+  //       };
+  //       eventData.ab_test = data.ab_test ? data.ab_test : 'NA';
+  //       eventData.msg_type = data.msg_type ? data.msg_type : 'NA';
+  //       MixpanelService.track('push-message-received', {});
+  //     }catch (err){
+  //       console.log(err);
+  //     }
+  //     var msg = data.message;
+  //     alert(msg.title + ': ' + msg.text);
+  //     // then call finish to let the OS know we are done
+  //     push.finish(function () {
+  //       console.log("processing of push data is finished");
+  //     }, function () {
+  //       console.log("something went wrong with push.finish for ID = " + data.additionalData.notId)
+  //     }, data.additionalData.notId);
+  //   });
+  // }
 })
 
 .controller('ScanProductCtrl', function($scope,$cordovaBarcodeScanner,Products,$state,GoogleAnalyticsService,MixpanelService) {
@@ -548,8 +558,8 @@ angular.module('starter.controllers', [])
       "margin-left": "5px"
   };
 
-  var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
-  var mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
+  var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{5,})");
+  var mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{4,})");
   $scope.passwordQuality = '';
   $scope.analyze = function(value){
     if(value==''){
