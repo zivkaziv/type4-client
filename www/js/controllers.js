@@ -5,7 +5,8 @@ angular.module('starter.controllers', [])
                                  $rootScope,
                                  $cordovaBarcodeScanner,
                                  GoogleAnalyticsService,
-                                 MixpanelService) {
+                                 MixpanelService,
+                                 $window) {
   $scope.$on('$ionicView.enter', function() {
     GoogleAnalyticsService.sendEvent('menu-buttons', 'home', 'home', 'click');
     MixpanelService.track('menu-button-clicked',{'button name' : 'home'});
@@ -13,6 +14,19 @@ angular.module('starter.controllers', [])
 
   $scope.currentlyScanning = false;
 
+  function error() {
+    console.warn('Camera permission is not turned on');
+  }
+
+  function success( status ) {
+    if( !status.hasPermission ) error();
+  }
+
+  if($window.cordova && $window.cordova.plugins) {
+    var permissions = $window.cordova.plugins.permissions;
+    permissions.requestPermission(permissions.CAMERA, success, error);
+  }
+  
   $scope.scanBarcode = function() {
     if(!$scope.currentlyScanning) {
       $scope.currentlyScanning = true;
